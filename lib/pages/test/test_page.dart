@@ -27,8 +27,8 @@ class _TestPageState extends State<TestPage> {
 
   @override
   Widget build(BuildContext context) {
-    final config = ConfigProvider.of(context).test;
-    final provider = StateProvider.of(context);
+    final settings = SettingsProvider.of(context);
+    final provider = DataPointProvider.of(context);
     return Scaffold(
       extendBodyBehindAppBar: true,
       backgroundColor: Colors.white,
@@ -37,7 +37,7 @@ class _TestPageState extends State<TestPage> {
           children: [
             Visibility(
               visible: !showImage,
-              child: buildView(config),
+              child: buildView(settings),
               replacement: ComplexFigureImage(),
             ),
             Positioned(
@@ -46,28 +46,34 @@ class _TestPageState extends State<TestPage> {
               child: Row(
                 children: [
                   DrawActionButton(
-                    visible: config.enableUndo,
+                    visible: settings.undo,
                     margin: EdgeInsets.only(bottom: 16, right: 16),
                     backgroundColor: ThemeColors.borderGrey,
-                    onTap: () => _controller.undo(),
+                    onTap: () {
+                      // TODO TRACK UNDO
+                      _controller.undo();
+                    },
                     child: Icon(Icons.undo, color: Colors.black),
                   ),
                   DrawActionButton(
-                    visible: config.enableEraser,
+                    visible: settings.eraser,
                     margin: EdgeInsets.only(bottom: 16, right: 16),
                     backgroundColor: ThemeColors.borderGrey,
-                    onTap: () => setState(() {
-                      final isEraseMode = _controller.eraseMode;
-                      _controller.thickness = isEraseMode ? 4.0 : 24.0;
-                      _controller.eraseMode = !isEraseMode;
-                    }),
+                    onTap: () {
+                      // TODO TRACK ERASER
+                      setState(() {
+                        final isEraseMode = _controller.eraseMode;
+                        _controller.thickness = isEraseMode ? 4.0 : 24.0;
+                        _controller.eraseMode = !isEraseMode;
+                      });
+                    },
                     child: Icon(
                       _controller.eraseMode ? Icons.draw : FontAwesome.eraser,
                       color: Colors.black,
                     ),
                   ),
                   DrawActionButton(
-                    visible: config.enableImagePreview,
+                    visible: settings.imagePreview,
                     margin: EdgeInsets.only(bottom: 16, right: 16),
                     backgroundColor: ThemeColors.green,
                     onTap: () => setState(() => showImage = !showImage),
@@ -86,16 +92,19 @@ class _TestPageState extends State<TestPage> {
                 margin: EdgeInsets.only(top: 16, right: 16),
                 backgroundColor: ThemeColors.red,
                 child: Icon(Icons.stop, color: Colors.white),
-                onTap: () {
+                onTap: () async {
                   final details = _controller.createPicture();
-                  provider.data = DataPoint(
-                    width: details.width,
-                    height: details.height,
-                    events: events,
-                    strokes: events
-                        .where((e) => e.type == MouseEventType.PAN_END)
-                        .length,
-                  );
+                  provider.createWithImage(
+                      details.picture,
+                      DataPoint(
+                        id: '${provider.all.length}',
+                        start: events.first.timestamp,
+                        end: events.last.timestamp,
+                        width: details.width,
+                        height: details.height,
+                        events: events,
+                      ));
+
                   Navigator.pop(context);
                 },
               ),
@@ -106,12 +115,13 @@ class _TestPageState extends State<TestPage> {
     );
   }
 
-  Widget buildView(TestConfig config) {
+  Widget buildView(SettingsProvider config) {
     final paintView = PaintView(
       controller: _controller,
       onPanStart: (details) {
         events.add(MouseEvent(
           type: MouseEventType.PAN_START,
+          timestamp: DateTime.now(),
           duration: details.sourceTimeStamp,
           position: details.localPosition,
           device: details.kind,
@@ -120,6 +130,7 @@ class _TestPageState extends State<TestPage> {
       onPanUpdate: (details) {
         events.add(MouseEvent(
           type: MouseEventType.PAN_UPDATE,
+          timestamp: DateTime.now(),
           duration: details.sourceTimeStamp,
           position: details.localPosition,
           delta: details.delta,
@@ -128,12 +139,13 @@ class _TestPageState extends State<TestPage> {
       onPanEnd: (details) {
         events.add(MouseEvent(
           type: MouseEventType.PAN_END,
+          timestamp: DateTime.now(),
           position: events.last.position,
         ));
       },
     );
 
-    if (config.enableSplitScreen) {
+    if (config.splitScreen) {
       return Column(
         children: [
           Text('Reference image'),

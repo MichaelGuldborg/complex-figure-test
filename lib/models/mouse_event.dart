@@ -1,5 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart';
 
 enum MouseEventType {
   TAP,
@@ -20,14 +20,17 @@ class MouseEvent {
   MouseEvent({
     required this.type,
     required this.position,
+    required this.timestamp,
     this.delta,
     this.duration,
     this.device,
-  }) : timestamp = DateTime.now();
+  });
 
   @override
   String toString() {
-    final _time = '${timestamp.hour}:${timestamp.minute}:${timestamp.second}.${_threeDigits(timestamp.millisecond)}';
+    final _millis = _threeDigits(timestamp.millisecond);
+    final _time =
+        '${timestamp.hour}:${timestamp.minute}:${timestamp.second}.$_millis';
     // final _time = '${timestamp.toIso8601String()}';
     final _type = type.name;
     final _position = '$position'.replaceAll('Offset', '');
@@ -36,8 +39,43 @@ class MouseEvent {
   }
 
   static String _threeDigits(int n) {
-    if (n >= 100) return "${n}";
-    if (n >= 10) return "0${n}";
-    return "00${n}";
+    if (n >= 100) return "$n";
+    if (n >= 10) return "0$n";
+    return "00$n";
+  }
+
+  factory MouseEvent.fromMap(Map<String, dynamic> map) {
+    return MouseEvent(
+      type: MouseEventType.values[map['type']],
+      timestamp: (map['timestamp'] as Timestamp).toDate(),
+      position: convertOffset(map['position']!),
+      delta: convertOffset(map['delta']),
+      duration: map['duration'] != null
+          ? Duration(microseconds: map['duration'])
+          : null,
+      device: map['device'] != null
+          ? PointerDeviceKind.values[map['device']]
+          : null,
+    );
+  }
+
+  static Offset convertOffset(String? e) {
+    if (e == null) return Offset(0, 0);
+    final split = e.split(';');
+    return Offset(
+      double.parse(split[0]),
+      double.parse(split[1]),
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'type': type.index,
+      'timestamp': timestamp,
+      'position': '${position.dx};${position.dy}',
+      'delta': delta != null ? '${delta?.dx};${delta?.dy}' : null,
+      'duration': duration?.inMicroseconds,
+      'device': device?.index,
+    };
   }
 }
