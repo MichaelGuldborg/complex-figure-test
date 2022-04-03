@@ -1,14 +1,15 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
-enum GestureType {
-  START,
-  MOVE,
-  END,
+enum MouseEventType {
+  TAP,
+  PAN_START,
+  PAN_UPDATE,
+  PAN_END,
 }
 
-class Gesture {
-  final GestureType type;
+class MouseEvent {
+  final MouseEventType type;
   final DateTime timestamp;
   final Offset position;
   final Offset? delta;
@@ -16,7 +17,7 @@ class Gesture {
   final Duration? duration;
   final PointerDeviceKind? device;
 
-  Gesture({
+  MouseEvent({
     required this.type,
     required this.position,
     this.delta,
