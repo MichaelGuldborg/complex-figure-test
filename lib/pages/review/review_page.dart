@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:reyo/constants/theme_colors.dart';
 import 'package:reyo/pages/review/data_point_view.dart';
 import 'package:reyo/pages/review/review_list_page.dart';
 import 'package:reyo/providers/state_provider.dart';
@@ -150,11 +149,8 @@ class _ReviewPageState extends State<ReviewPage> {
                     margin: EdgeInsets.only(right: 16),
                     width: 80,
                     height: 16,
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: colors
-                      )
-                    ),
+                    decoration:
+                        BoxDecoration(gradient: LinearGradient(colors: colors)),
                   ),
                 ),
                 Container(
@@ -191,19 +187,6 @@ class _ReviewPageState extends State<ReviewPage> {
     final remainder = (t % 60000000);
     final seconds = (remainder / 1000000).ceil().toString().padLeft(2, '0');
     return '$minutes:$seconds';
-  }
-
-  Widget _info(String text) {
-    return Container(
-      margin: EdgeInsets.only(bottom: 16),
-      child: Text(
-        text,
-        style: TextStyle(
-          fontSize: 18,
-          fontWeight: FontWeight.w400,
-        ),
-      ),
-    );
   }
 }
 
