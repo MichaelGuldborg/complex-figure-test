@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:reyo/pages/review/data_point_view.dart';
 import 'package:reyo/pages/review/review_list_page.dart';
@@ -14,13 +16,41 @@ class ReviewPage extends StatefulWidget {
 }
 
 class _ReviewPageState extends State<ReviewPage> {
+  double _maxTime = 0;
   double _time = 0;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     final provider = DataPointProvider.of(context, listen: false);
+    _maxTime = provider.current.duration.toDouble();
     _time = provider.current.duration.toDouble();
+  }
+
+  Timer? _timer;
+
+  _play([double millis = 1000]) {
+    _timer?.cancel();
+    _timer = Timer.periodic(Duration(milliseconds: 1), (t) {
+      final nextTime = _time + millis;
+      if (nextTime < _maxTime) {
+        setState(() => _time = nextTime);
+      } else {
+        _timer?.cancel();
+      }
+    });
+  }
+
+  _playSlow() => _play(500);
+
+  _playFast() => _play(2000);
+
+  _stop() => _timer?.cancel();
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
   }
 
   @override
@@ -52,29 +82,80 @@ class _ReviewPageState extends State<ReviewPage> {
                   title: 'Size',
                   subtitle: '${data.width} / ${data.height}',
                 ),
+                InfoBox(
+                  title: 'Orientation',
+                  subtitle: data.orientation ?? 'unknown',
+                ),
               ],
             ),
           ),
-          DataPointView(
-            data: data,
-            time: _time,
-            colors: settings.colors ? colors : [],
+          Center(
+            child: DataPointView(
+              data: data,
+              time: _time,
+              scale: 0.5,
+              colors: settings.colors ? colors : [],
+            ),
           ),
           Slider(
             min: 0,
             max: data.duration.toDouble(),
             value: _time,
-            onChanged: (e) => setState(() => _time = e),
+            onChanged: (e) {
+              _timer?.cancel();
+              setState(() => _time = e);
+            },
           ),
           Container(
-            padding: EdgeInsets.symmetric(horizontal: 24),
-            child: Text(
-              '${formatTime(_time)} / ${formatTime(data.duration.toDouble())}',
-              style: TextStyle(
-                fontSize: 24,
-              ),
+            margin: EdgeInsets.symmetric(horizontal: 12),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Container(
+                  margin: EdgeInsets.only(right: 16),
+                  child: IconButton(
+                    icon: Icon(Icons.pause_rounded),
+                    iconSize: 40,
+                    onPressed: _stop,
+                  ),
+                ),
+                Container(
+                  margin: EdgeInsets.only(right: 16),
+                  child: IconButton(
+                    icon: Icon(Icons.play_arrow_rounded),
+                    iconSize: 40,
+                    onPressed: _play,
+                  ),
+                ),
+                Container(
+                  margin: EdgeInsets.only(right: 16),
+                  child: IconButton(
+                    icon: Icon(Icons.slow_motion_video_rounded),
+                    iconSize: 40,
+                    onPressed: _playSlow,
+                  ),
+                ),
+                Container(
+                  margin: EdgeInsets.only(right: 16),
+                  child: IconButton(
+                    icon: Icon(Icons.fast_forward_rounded),
+                    iconSize: 40,
+                    onPressed: _playFast,
+                  ),
+                ),
+                Expanded(child: SizedBox.shrink()),
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 24),
+                  child: Text(
+                    '${formatTime(_time)} / ${formatTime(data.duration.toDouble())}',
+                    style: TextStyle(
+                      fontSize: 24,
+                    ),
+                  ),
+                )
+              ],
             ),
-          )
+          ),
         ],
       ),
     );

@@ -12,8 +12,8 @@ class MouseEvent {
   final MouseEventType type;
   final DateTime timestamp;
   final Offset position;
-  final Offset? delta;
 
+  final Offset? delta;
   final Duration? duration;
   final PointerDeviceKind? device;
 

@@ -6,23 +6,17 @@ class SettingsProvider extends ChangeNotifier {
     return Provider.of(context, listen: listen);
   }
 
-  bool undo = false;
+  bool undo = true;
   bool eraser = false;
-  bool imagePreview = false;
-  bool splitScreen = true;
   bool colors = false;
 
   update({
     bool? undo,
     bool? eraser,
-    bool? imagePreview,
-    bool? splitScreen,
     bool? colors,
   }) {
     this.undo = undo ?? this.undo;
     this.eraser = eraser ?? this.eraser;
-    this.imagePreview = imagePreview ?? this.imagePreview;
-    this.splitScreen = splitScreen ?? this.splitScreen;
     this.colors = colors ?? this.colors;
     notifyListeners();
   }

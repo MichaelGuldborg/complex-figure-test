@@ -8,9 +8,11 @@ class DataPointView extends StatelessWidget {
     Key? key,
     required this.data,
     required this.time,
+    this.scale = 1,
     this.colors = const [],
   }) : super(key: key);
 
+  final double scale;
   final DataPoint data;
   final double time;
   final List<Color> colors;
@@ -39,10 +41,14 @@ class DataPointView extends StatelessWidget {
       if (e.type == MouseEventType.PAN_START) {
         final paint = getPaint(_millis / duration);
         final path = Path();
-        path.moveTo(e.position.dx, e.position.dy);
+        final dx = e.position.dx * scale;
+        final dy = e.position.dy * scale;
+        path.moveTo(dx, dy);
         result.add(PathPaintEntry(path, paint));
       } else if (e.type == MouseEventType.PAN_UPDATE) {
-        result.last.path.lineTo(e.position.dx, e.position.dy);
+        final dx = e.position.dx * scale;
+        final dy = e.position.dy * scale;
+        result.last.path.lineTo(dx, dy);
       } else if (e.type == MouseEventType.PAN_END) {
         // nothing
       } else if (e.type == MouseEventType.TAP) {
@@ -57,8 +63,8 @@ class DataPointView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: data.width.toDouble(),
-      height: data.height.toDouble(),
+      width: data.width.toDouble() * scale,
+      height: data.height.toDouble() * scale,
       child: ClipRect(
         child: CustomPaint(
           painter: PathPainter(pathEntries),

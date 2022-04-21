@@ -6,10 +6,9 @@ class ThemeColors {
 
   // static const primary = Color(0xff7B74C8);
   // static const primaryLight = Color(0xff8186E3);
-  static const primary = Color(0xFF57c4a3);
-  static const primaryDark = Color(0xFF4697a1);
-  static const primaryLight = Color(0xFF68dea0);
-  static const accent = Color(0xFF00C68E);
+  static const primary = blue;
+  static const primaryDark = darkBlue;
+  static const primaryLight = lightBlue;
   static const secondary = ThemeColors.offWhite;
 
   static const backgroundGradient = LinearGradient(

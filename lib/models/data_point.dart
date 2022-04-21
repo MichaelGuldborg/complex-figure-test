@@ -7,10 +7,12 @@ class DataPoint extends Identifiable {
   final String id;
   final int width;
   final int height;
+  final String? orientation;
   final List<MouseEvent> events;
   final DateTime start;
   final DateTime end;
   final String? image;
+
 
   int get duration {
     final startMillis = start.microsecondsSinceEpoch;
@@ -24,6 +26,7 @@ class DataPoint extends Identifiable {
     required this.end,
     this.width = 0,
     this.height = 0,
+    this.orientation,
     this.events = const [],
     this.image,
   });
