@@ -1,9 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:reyo/constants/theme_colors.dart';
 import 'package:reyo/pages/review/data_point_view.dart';
 import 'package:reyo/pages/review/review_list_page.dart';
-import 'package:reyo/providers/config_provider.dart';
 import 'package:reyo/providers/state_provider.dart';
 
 final colors = [Colors.red, Colors.yellow, Colors.green];
@@ -18,6 +18,7 @@ class ReviewPage extends StatefulWidget {
 class _ReviewPageState extends State<ReviewPage> {
   double _maxTime = 0;
   double _time = 0;
+  bool enableColor = false;
 
   @override
   void didChangeDependencies() {
@@ -55,7 +56,6 @@ class _ReviewPageState extends State<ReviewPage> {
 
   @override
   Widget build(BuildContext context) {
-    final settings = SettingsProvider.of(context);
     final provider = DataPointProvider.of(context);
     final data = provider.current;
 
@@ -94,7 +94,7 @@ class _ReviewPageState extends State<ReviewPage> {
               data: data,
               time: _time,
               scale: 0.5,
-              colors: settings.colors ? colors : [],
+              colors: enableColor ? colors : [],
             ),
           ),
           Slider(
@@ -144,6 +144,31 @@ class _ReviewPageState extends State<ReviewPage> {
                   ),
                 ),
                 Expanded(child: SizedBox.shrink()),
+                Visibility(
+                  visible: enableColor,
+                  child: Container(
+                    margin: EdgeInsets.only(right: 16),
+                    width: 80,
+                    height: 16,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: colors
+                      )
+                    ),
+                  ),
+                ),
+                Container(
+                  margin: EdgeInsets.only(right: 16),
+                  child: IconButton(
+                    icon: Icon(enableColor
+                        ? Icons.color_lens
+                        : Icons.color_lens_outlined),
+                    iconSize: 40,
+                    onPressed: () {
+                      setState(() => enableColor = !enableColor);
+                    },
+                  ),
+                ),
                 Container(
                   padding: EdgeInsets.symmetric(horizontal: 24),
                   child: Text(

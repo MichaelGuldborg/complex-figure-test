@@ -21,17 +21,6 @@ class HomePage extends StatelessWidget {
           padding: EdgeInsets.all(8),
           child: Text(title),
         ),
-        actions: [
-          Container(
-            margin: EdgeInsets.only(right: 24),
-            child: IconButton(
-              icon: Icon(Icons.settings, size: 40),
-              onPressed: () {
-                Navigator.pushNamed(context, Routes.settings);
-              },
-            ),
-          ),
-        ],
       ),
       floatingActionButton: MaterialButton(
         shape: RoundedRectangleBorder(

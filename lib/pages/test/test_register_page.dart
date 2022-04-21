@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:fluttericon/font_awesome_icons.dart';
 import 'package:reyo/components/bottom_sheet/bottom_sheet_select.dart';
 import 'package:reyo/constants/theme_colors.dart';
+import 'package:reyo/pages/settings_page.dart';
+import 'package:reyo/providers/config_provider.dart';
 
 class TestRegisterRequest {
   final String? name;
@@ -31,11 +34,13 @@ class TestRegisterPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final settings = SettingsProvider.of(context);
+
     return Scaffold(
       body: Container(
         alignment: Alignment.center,
         child: SizedBox(
-          width: 320,
+          width: 460,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -46,7 +51,7 @@ class TestRegisterPage extends StatelessWidget {
                   controller: _name,
                   keyboardType: TextInputType.name,
                   decoration: InputDecoration(
-                    hintText: 'Email',
+                    hintText: 'Name',
                   ),
                 ),
               ),
@@ -108,21 +113,45 @@ class TestRegisterPage extends StatelessWidget {
                   ),
                 ),
               ),
-              MaterialButton(
-                color: ThemeColors.primary,
-                child: Text(
-                  'START TEST',
-                  style: TextStyle(color: Colors.white),
+              Container(
+                margin: EdgeInsets.only(bottom: 32),
+                child: MaterialButton(
+                  color: ThemeColors.primary,
+                  child: Text(
+                    'START TEST',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  onPressed: () async {
+                    onNextPress(TestRegisterRequest(
+                      name: _name.text.trim(),
+                      age: int.tryParse(_age.text.trim()),
+                      sex: _sex.text.trim(),
+                      education: _education.text.trim(),
+                    ));
+                  },
                 ),
-                onPressed: () async {
-                  onNextPress(TestRegisterRequest(
-                    name: _name.text.trim(),
-                    age: int.tryParse(_age.text.trim()),
-                    sex: _sex.text.trim(),
-                    education: _education.text.trim(),
-                  ));
-                },
               ),
+              // Container(
+              //   margin: EdgeInsets.only(bottom: 16),
+              //   child: GridItemToggle(
+              //     icon: FontAwesome.eraser,
+              //     title: 'Eraser',
+              //     subtitle:
+              //     'Allow user to switch to an eraser during the test administration',
+              //     value: settings.eraser,
+              //     onChange: (v) => settings.update(eraser: v),
+              //   ),
+              // ),
+              // Container(
+              //   margin: EdgeInsets.only(bottom: 16),
+              //   child: GridItemToggle(
+              //     icon: Icons.undo,
+              //     title: 'Undo',
+              //     subtitle: 'Allow user to undo the last stroke',
+              //     value: settings.undo,
+              //     onChange: (v) => settings.update(undo: v),
+              //   ),
+              // ),
             ],
           ),
         ),

@@ -73,7 +73,6 @@ class GridItemToggle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 20,
       padding: EdgeInsets.all(16),
       decoration: BoxDecoration(color: Colors.white, boxShadow: const [
         BoxShadow(
