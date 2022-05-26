@@ -92,11 +92,12 @@ class LoginPage extends StatelessWidget {
                 child: Text('Forgot your password?'),
                 onPressed: () async {
                   final email = _email.text.trim().toLowerCase();
-                  final response = await FirebaseAuth.instance
+                  await FirebaseAuth.instance
                       .sendPasswordResetEmail(email: email)
                       .catchError((error) {
                     showError('$error');
                   });
+                  showSuccess('Check your email to reset your password');
                 },
               ),
             ],

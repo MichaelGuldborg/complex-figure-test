@@ -59,12 +59,12 @@ class CrudNotifier<T extends Identifiable> extends ChangeNotifier
   }
 
   @override
-  Future create(T value) async {
+  Future<T?> create(T value) async {
     final response = await service.create(value);
-    if (response == null) return;
-    _values.insert(0, value);
+    if (response == null) return null;
+    _values.insert(0, response);
     notifyListeners();
-    return value;
+    return response;
   }
 
   @override
@@ -76,12 +76,12 @@ class CrudNotifier<T extends Identifiable> extends ChangeNotifier
   }
 
   @override
-  Future update(String? id, Map<String, dynamic> value) async {
+  Future update(String? id, Map<String, dynamic>? value) async {
     final response = await service.update(id, value);
     if (response == null) return;
     final index = _values.indexWhere((e) => e.id == id);
     index == -1 ? _values.insert(0, response) : _values[index] = response;
     notifyListeners();
-    return value;
+    return response;
   }
 }

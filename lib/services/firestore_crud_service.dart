@@ -31,8 +31,8 @@ class FirestoreCrudService<T extends Identifiable> extends CrudService<T> {
   }
 
   @override
-  Future<T?> update(String? id, Map<String, dynamic> value) async {
-    if (id == null) return null;
+  Future<T?> update(String? id, Map<String, dynamic>? value) async {
+    if (id == null || value == null) return null;
     await collection.doc(id).update(value);
     return read(id);
   }

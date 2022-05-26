@@ -1,17 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:reyo/components/primary_button.dart';
 import 'package:reyo/constants/theme_colors.dart';
+import 'package:reyo/models/test_session.dart';
 import 'package:reyo/pages/test/test_draw_page.dart';
 import 'package:reyo/pages/test/test_register_page.dart';
+import 'package:reyo/providers/complex_figure_test_provider.dart';
+import 'package:reyo/providers/test_session_provider.dart';
+import 'package:reyo/services/flutter_message.dart';
 
-class TestPage extends StatefulWidget {
-  const TestPage({Key? key}) : super(key: key);
+class TestFlowPage extends StatefulWidget {
+  const TestFlowPage({Key? key}) : super(key: key);
 
   @override
-  State<TestPage> createState() => _TestPageState();
+  State<TestFlowPage> createState() => _TestFlowPageState();
 }
 
-class _TestPageState extends State<TestPage> {
+class _TestFlowPageState extends State<TestFlowPage> {
+  TestSession? session;
   int index = 0;
 
   _next() {
@@ -24,6 +29,9 @@ class _TestPageState extends State<TestPage> {
 
   @override
   Widget build(BuildContext context) {
+    final providerA = TestSessionProvider.of(context);
+    final providerB = ComplexFigureTestProvider.of(context);
+
     return Scaffold(
       appBar: AppBar(),
       extendBodyBehindAppBar: true,
@@ -31,25 +39,51 @@ class _TestPageState extends State<TestPage> {
         index: index,
         children: [
           TestRegisterPage(
-            onNextPress: (request) {
-              // TODO save info
+            onNextPress: (request) async {
+              session = await providerA.create(TestSession(
+                id: '${providerA.all.length}',
+                name: request.name,
+                birthDate: request.birthDate,
+                sex: request.sex,
+                education: request.education,
+                start: DateTime.now(),
+                testIds: [],
+              ));
               _next();
             },
           ),
           TestDrawPage(
-            onNextPress: () => _next(),
+            onNextPress: (request) async {
+              final value = await providerB.createWithImage(request);
+              if (value == null) return showError('Something went wrong');
+              session?.testIds.add(value.id);
+              providerA.update(session?.id, session?.toMap());
+              _next();
+            },
           ),
           TestInfoPage(
             onNextPress: () => _next(),
           ),
           TestDrawPage(
-            onNextPress: () => _next(),
+            onNextPress: (request) async {
+              final value = await providerB.createWithImage(request);
+              if (value == null) return showError('Something went wrong');
+              session?.testIds.add(value.id);
+              providerA.update(session?.id, session?.toMap());
+              _next();
+            },
           ),
           TestInfoPage(
             onNextPress: () => _next(),
           ),
           TestDrawPage(
-            onNextPress: () => _next(),
+            onNextPress: (request) async {
+              final value = await providerB.createWithImage(request);
+              if (value == null) return showError('Something went wrong');
+              session?.testIds.add(value.id);
+              providerA.update(session?.id, session?.toMap());
+              _next();
+            },
           ),
           TestInfoPage(
             onNextPress: () => _next(),

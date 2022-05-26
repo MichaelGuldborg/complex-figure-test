@@ -1,36 +1,38 @@
 import 'package:flutter/material.dart';
-import 'package:fluttericon/font_awesome_icons.dart';
 import 'package:reyo/components/bottom_sheet/bottom_sheet_select.dart';
 import 'package:reyo/constants/theme_colors.dart';
-import 'package:reyo/pages/settings_page.dart';
+import 'package:reyo/pages/home/test_review_page.dart';
 import 'package:reyo/providers/config_provider.dart';
 
-class TestRegisterRequest {
+class TestSessionForm {
   final String? name;
-  final int? age;
+  final DateTime? birthDate;
   final String? sex;
   final String? education;
 
-  TestRegisterRequest({
+  TestSessionForm({
     this.name,
-    this.age,
+    this.birthDate,
     this.sex,
     this.education,
   });
 }
 
 class TestRegisterPage extends StatelessWidget {
-  final void Function(TestRegisterRequest request) onNextPress;
+  final now = DateTime.now();
+  final void Function(TestSessionForm request) onNextPress;
 
   TestRegisterPage({
     Key? key,
     required this.onNextPress,
   }) : super(key: key);
 
+  final _figure = TextEditingController()..text = 'ROCFT';
   final _name = TextEditingController();
-  final _age = TextEditingController();
+  final _birthDate = TextEditingController();
   final _sex = TextEditingController();
   final _education = TextEditingController();
+  DateTime _birthDateValue = DateTime.now();
 
   @override
   Widget build(BuildContext context) {
@@ -45,6 +47,36 @@ class TestRegisterPage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              // Container(
+              //   margin: EdgeInsets.only(bottom: 16),
+              //   child: TextField(
+              //     controller: _figure,
+              //     keyboardType: TextInputType.text,
+              //     decoration: InputDecoration(
+              //       hintText: 'Figure',
+              //     ),
+              //     onTap: () async {
+              //       final options = [
+              //         'Rey-Osterrieth',
+              //         'Taylor',
+              //         'Modified Taylor',
+              //         'Simplified Taylor',
+              //         'Mark'
+              //         'Medical College of Georgia',
+              //         'Benson',
+              //         'Other',
+              //       ];
+              //       final index = await showSelectBottomSheet(
+              //         context,
+              //         title: 'Select complex figure',
+              //         options: options,
+              //       );
+              //       if (index != null) {
+              //         _figure.text = options[index];
+              //       }
+              //     },
+              //   ),
+              // ),
               Container(
                 margin: EdgeInsets.only(bottom: 16),
                 child: TextField(
@@ -58,11 +90,27 @@ class TestRegisterPage extends StatelessWidget {
               Container(
                 margin: EdgeInsets.only(bottom: 16),
                 child: TextField(
-                  controller: _age,
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                    hintText: 'Age',
-                  ),
+                  controller: _birthDate,
+                  keyboardType: TextInputType.datetime,
+                  decoration: InputDecoration(hintText: 'Birthdate'),
+                  onTap: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return Dialog(
+                          child: CalendarDatePicker(
+                            initialDate: DateTime(now.year - 18),
+                            firstDate: DateTime(now.year - 100),
+                            lastDate: DateTime(now.year),
+                            onDateChanged: (date) {
+                              _birthDateValue = date;
+                              _birthDate.text = formatDate(date);
+                            },
+                          ),
+                        );
+                      },
+                    );
+                  },
                 ),
               ),
               Container(
@@ -122,36 +170,15 @@ class TestRegisterPage extends StatelessWidget {
                     style: TextStyle(color: Colors.white),
                   ),
                   onPressed: () async {
-                    onNextPress(TestRegisterRequest(
+                    onNextPress(TestSessionForm(
                       name: _name.text.trim(),
-                      age: int.tryParse(_age.text.trim()),
+                      birthDate: _birthDateValue,
                       sex: _sex.text.trim(),
                       education: _education.text.trim(),
                     ));
                   },
                 ),
               ),
-              // Container(
-              //   margin: EdgeInsets.only(bottom: 16),
-              //   child: GridItemToggle(
-              //     icon: FontAwesome.eraser,
-              //     title: 'Eraser',
-              //     subtitle:
-              //     'Allow user to switch to an eraser during the test administration',
-              //     value: settings.eraser,
-              //     onChange: (v) => settings.update(eraser: v),
-              //   ),
-              // ),
-              // Container(
-              //   margin: EdgeInsets.only(bottom: 16),
-              //   child: GridItemToggle(
-              //     icon: Icons.undo,
-              //     title: 'Undo',
-              //     subtitle: 'Allow user to undo the last stroke',
-              //     value: settings.undo,
-              //     onChange: (v) => settings.update(undo: v),
-              //   ),
-              // ),
             ],
           ),
         ),

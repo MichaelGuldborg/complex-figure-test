@@ -1,20 +1,21 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:fluttericon/font_awesome_icons.dart';
 import 'package:reyo/components/button.dart';
 import 'package:reyo/constants/assets.dart';
 import 'package:reyo/constants/theme_colors.dart';
-import 'package:reyo/models/data_point.dart';
+import 'package:reyo/models/complex_figure_test.dart';
 import 'package:reyo/models/mouse_event.dart';
 import 'package:reyo/pages/paint/paint_view.dart';
 import 'package:reyo/providers/config_provider.dart';
-import 'package:reyo/providers/state_provider.dart';
 
 class TestDrawPage extends StatefulWidget {
-  final VoidCallback? onNextPress;
+  final Function(ComplexFigureTest value) onNextPress;
 
   const TestDrawPage({
     Key? key,
-    this.onNextPress,
+    required this.onNextPress,
   }) : super(key: key);
 
   @override
@@ -32,7 +33,6 @@ class _TestDrawPageState extends State<TestDrawPage> {
   @override
   Widget build(BuildContext context) {
     final settings = SettingsProvider.of(context);
-    final provider = DataPointProvider.of(context);
     return Scaffold(
       extendBodyBehindAppBar: true,
       backgroundColor: Colors.white,
@@ -84,21 +84,15 @@ class _TestDrawPageState extends State<TestDrawPage> {
                 child: Icon(Icons.stop, color: Colors.white),
                 onTap: () async {
                   final details = _controller.createPicture();
-                  provider.createWithImage(
-                    details.picture,
-                    DataPoint(
-                      id: '${provider.all.length}',
-                      start: events.first.timestamp,
-                      end: events.last.timestamp,
-                      width: details.width,
-                      height: details.height,
-                      events: events,
-                    ),
-                  );
-
-                  if (widget.onNextPress != null) {
-                    widget.onNextPress!();
-                  }
+                  widget.onNextPress(ComplexFigureTest(
+                    id: '${Random().nextInt(100000)}',
+                    start: events.first.timestamp,
+                    end: events.last.timestamp,
+                    width: details.width,
+                    height: details.height,
+                    events: events,
+                    imageFile: details.picture,
+                  ));
                 },
               ),
             ),

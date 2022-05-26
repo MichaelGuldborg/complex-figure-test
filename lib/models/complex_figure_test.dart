@@ -1,10 +1,14 @@
+import 'dart:ui';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:reyo/models/identifyable.dart';
 import 'package:reyo/models/mouse_event.dart';
+import 'package:reyo/models/serializeList.dart';
 
-class DataPoint extends Identifiable {
+class ComplexFigureTest extends Identifiable {
   @override
   final String id;
+  final String? type; // copy, immediate-recall, delayed-recall
   final int width;
   final int height;
   final String? orientation;
@@ -12,6 +16,7 @@ class DataPoint extends Identifiable {
   final DateTime start;
   final DateTime end;
   final String? image;
+  final Picture? imageFile;
 
 
   int get duration {
@@ -20,8 +25,9 @@ class DataPoint extends Identifiable {
     return endMillis - startMillis;
   }
 
-  DataPoint({
+  ComplexFigureTest({
     required this.id,
+    this.type,
     required this.start,
     required this.end,
     this.width = 0,
@@ -29,6 +35,7 @@ class DataPoint extends Identifiable {
     this.orientation,
     this.events = const [],
     this.image,
+    this.imageFile,
   });
 
   Map<String, dynamic> toMap() {
@@ -42,8 +49,8 @@ class DataPoint extends Identifiable {
     };
   }
 
-  factory DataPoint.fromMap(Map<String, dynamic> map) {
-    return DataPoint(
+  factory ComplexFigureTest.fromMap(Map<String, dynamic> map) {
+    return ComplexFigureTest(
       id: map['id'],
       start: (map['start'] as Timestamp).toDate(),
       end: (map['end'] as Timestamp).toDate(),
@@ -55,10 +62,3 @@ class DataPoint extends Identifiable {
   }
 }
 
-List<T> serializeList<T>(
-  dynamic e,
-  T Function(Map<String, dynamic>) serializer,
-) {
-  if (e == null) return [];
-  return (e as List).map((e) => serializer(e)).toList();
-}

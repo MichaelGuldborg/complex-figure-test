@@ -7,9 +7,8 @@ class Routes {
   static const forgotPassword = "/auth/forgot-password";
 
   static const home = "/home";
-  static const test = "/test";
-  static const reviews = "/reviews";
+  static const session = "/session";
   static const review = "/review";
-  static const settings = "/settings";
+  static const test = "/test";
 
 }

@@ -5,7 +5,7 @@ abstract class CrudService<T> {
 
   Future<T?> read(String? id);
 
-  Future<T?> update(String? id, Map<String, dynamic> value);
+  Future<T?> update(String? id, Map<String, dynamic>? value);
 
   Future delete(String? id);
 }

@@ -1,20 +1,25 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:reyo/pages/review/data_point_view.dart';
-import 'package:reyo/pages/review/review_list_page.dart';
-import 'package:reyo/providers/state_provider.dart';
+import 'package:reyo/models/complex_figure_test.dart';
+import 'package:reyo/pages/home/complex_figure_test_view.dart';
+import 'package:reyo/providers/complex_figure_test_provider.dart';
 
-final colors = [Colors.red, Colors.yellow, Colors.green];
+final colors = [
+  Colors.red,
+  Colors.yellow,
+  Colors.green,
+  Colors.blue,
+];
 
-class ReviewPage extends StatefulWidget {
-  const ReviewPage({Key? key}) : super(key: key);
+class TestReviewPage extends StatefulWidget {
+  const TestReviewPage({Key? key}) : super(key: key);
 
   @override
-  State<ReviewPage> createState() => _ReviewPageState();
+  State<TestReviewPage> createState() => _TestReviewPageState();
 }
 
-class _ReviewPageState extends State<ReviewPage> {
+class _TestReviewPageState extends State<TestReviewPage> {
   double _maxTime = 0;
   double _time = 0;
   bool enableColor = false;
@@ -22,9 +27,10 @@ class _ReviewPageState extends State<ReviewPage> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    final provider = DataPointProvider.of(context, listen: false);
-    _maxTime = provider.current.duration.toDouble();
-    _time = provider.current.duration.toDouble();
+    final argument =
+        ModalRoute.of(context)?.settings.arguments as ComplexFigureTest;
+    _maxTime = argument.duration.toDouble();
+    _time = argument.duration.toDouble();
   }
 
   Timer? _timer;
@@ -41,11 +47,16 @@ class _ReviewPageState extends State<ReviewPage> {
     });
   }
 
-  _playSlow() => _play(500);
+  _stop() {
+    _timer?.cancel();
+    setState(() => _time = 0);
+  }
 
   _playFast() => _play(2000);
 
-  _stop() => _timer?.cancel();
+  _pause() => _timer?.cancel();
+
+  get _isPlaying => _timer?.isActive ?? false;
 
   @override
   void dispose() {
@@ -55,8 +66,10 @@ class _ReviewPageState extends State<ReviewPage> {
 
   @override
   Widget build(BuildContext context) {
-    final provider = DataPointProvider.of(context);
-    final data = provider.current;
+    final argument =
+        ModalRoute.of(context)?.settings.arguments as ComplexFigureTest;
+    final provider = ComplexFigureTestProvider.of(context);
+    final value = provider.get(argument.id)!;
 
     return Scaffold(
       appBar: AppBar(
@@ -70,27 +83,19 @@ class _ReviewPageState extends State<ReviewPage> {
             child: Row(
               children: [
                 InfoBox(
-                  title: 'Start',
-                  subtitle: formatDateTime(data.start),
+                  title: 'Date',
+                  subtitle: formatDate(value.start),
                 ),
                 InfoBox(
-                  title: 'End',
-                  subtitle: formatDateTime(data.end),
-                ),
-                InfoBox(
-                  title: 'Size',
-                  subtitle: '${data.width} / ${data.height}',
-                ),
-                InfoBox(
-                  title: 'Orientation',
-                  subtitle: data.orientation ?? 'unknown',
+                  title: 'Time',
+                  subtitle: formatDateTime(value.start),
                 ),
               ],
             ),
           ),
           Center(
-            child: DataPointView(
-              data: data,
+            child: ComplexFigureTestView(
+              data: value,
               time: _time,
               scale: 0.5,
               colors: enableColor ? colors : [],
@@ -98,7 +103,7 @@ class _ReviewPageState extends State<ReviewPage> {
           ),
           Slider(
             min: 0,
-            max: data.duration.toDouble(),
+            max: value.duration.toDouble(),
             value: _time,
             onChanged: (e) {
               _timer?.cancel();
@@ -113,7 +118,7 @@ class _ReviewPageState extends State<ReviewPage> {
                 Container(
                   margin: EdgeInsets.only(right: 16),
                   child: IconButton(
-                    icon: Icon(Icons.pause_rounded),
+                    icon: Icon(Icons.stop),
                     iconSize: 40,
                     onPressed: _stop,
                   ),
@@ -121,17 +126,11 @@ class _ReviewPageState extends State<ReviewPage> {
                 Container(
                   margin: EdgeInsets.only(right: 16),
                   child: IconButton(
-                    icon: Icon(Icons.play_arrow_rounded),
+                    icon: Icon(_isPlaying
+                        ? Icons.pause_rounded
+                        : Icons.play_arrow_rounded),
                     iconSize: 40,
-                    onPressed: _play,
-                  ),
-                ),
-                Container(
-                  margin: EdgeInsets.only(right: 16),
-                  child: IconButton(
-                    icon: Icon(Icons.slow_motion_video_rounded),
-                    iconSize: 40,
-                    onPressed: _playSlow,
+                    onPressed: _isPlaying ? _pause : _play,
                   ),
                 ),
                 Container(
@@ -168,7 +167,7 @@ class _ReviewPageState extends State<ReviewPage> {
                 Container(
                   padding: EdgeInsets.symmetric(horizontal: 24),
                   child: Text(
-                    '${formatTime(_time)} / ${formatTime(data.duration.toDouble())}',
+                    '${formatTime(_time)} / ${formatTime(value.duration.toDouble())}',
                     style: TextStyle(
                       fontSize: 24,
                     ),
@@ -187,6 +186,12 @@ class _ReviewPageState extends State<ReviewPage> {
     final remainder = (t % 60000000);
     final seconds = (remainder / 1000000).ceil().toString().padLeft(2, '0');
     return '$minutes:$seconds';
+  }
+
+  String formatDateTime(DateTime e) {
+    final hours = '${e.hour}'.padLeft(2, '0');
+    final minutes = '${e.minute}'.padLeft(2, '0');
+    return '$hours:$minutes';
   }
 }
 
@@ -229,4 +234,11 @@ class InfoBox extends StatelessWidget {
       ),
     );
   }
+}
+
+String formatDate(DateTime e) {
+  final year = e.year;
+  final month = '${e.month}'.padLeft(2, '0');
+  final day = '${e.day}'.padLeft(2, '0');
+  return '$day/$month/$year';
 }

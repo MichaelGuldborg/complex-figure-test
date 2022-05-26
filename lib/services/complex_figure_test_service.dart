@@ -2,22 +2,23 @@ import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:reyo/models/data_point.dart';
+import 'package:reyo/models/complex_figure_test.dart';
 import 'package:reyo/services/firestore_crud_service.dart';
 
-final collection =
-    FirebaseFirestore.instance.collection('data').withConverter<DataPoint>(
+final collection = FirebaseFirestore.instance
+    .collection('test')
+    .withConverter<ComplexFigureTest>(
         toFirestore: (value, _) => value.toMap(),
         fromFirestore: (snapshot, _) {
           final data = snapshot.data() ?? {};
-          return DataPoint.fromMap({...data, 'id': snapshot.id});
+          return ComplexFigureTest.fromMap({...data, 'id': snapshot.id});
         });
 
-class DataPointService extends FirestoreCrudService<DataPoint> {
-  DataPointService() : super(collection);
+class ComplexFigureTestService extends FirestoreCrudService<ComplexFigureTest> {
+  ComplexFigureTestService() : super(collection);
 
   @override
-  Future<List<DataPoint>> readAll() async {
+  Future<List<ComplexFigureTest>> readAll() async {
     final response = await collection.orderBy('start', descending: true).get();
     return response.docs.map((e) => e.data()).toList();
   }

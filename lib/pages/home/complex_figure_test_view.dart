@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:rainbow_color/rainbow_color.dart';
-import 'package:reyo/models/data_point.dart';
+import 'package:reyo/models/complex_figure_test.dart';
 import 'package:reyo/models/mouse_event.dart';
 
-class DataPointView extends StatelessWidget {
-  const DataPointView({
+class ComplexFigureTestView extends StatelessWidget {
+  const ComplexFigureTestView({
     Key? key,
     required this.data,
     required this.time,
@@ -13,7 +13,7 @@ class DataPointView extends StatelessWidget {
   }) : super(key: key);
 
   final double scale;
-  final DataPoint data;
+  final ComplexFigureTest data;
   final double time;
   final List<Color> colors;
 
