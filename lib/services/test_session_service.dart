@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:reyo/models/test_session.dart';
 import 'package:reyo/services/firestore_crud_service.dart';
 
@@ -15,7 +16,11 @@ class TestSessionService extends FirestoreCrudService<TestSession> {
 
   @override
   Future<List<TestSession>> readAll() async {
-    final response = await collection.orderBy('start', descending: true).get();
+    final currentUser = FirebaseAuth.instance.currentUser;
+    final response = await collection
+        .where('userId', isEqualTo: currentUser!.uid)
+        .orderBy('start', descending: true)
+        .get();
     return response.docs.map((e) => e.data()).toList();
   }
 }

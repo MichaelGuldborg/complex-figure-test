@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:reyo/components/primary_button.dart';
 import 'package:reyo/constants/theme_colors.dart';
@@ -29,6 +30,7 @@ class _TestFlowPageState extends State<TestFlowPage> {
 
   @override
   Widget build(BuildContext context) {
+    final currentUser = FirebaseAuth.instance.currentUser!;
     final providerA = TestSessionProvider.of(context);
     final providerB = ComplexFigureTestProvider.of(context);
 
@@ -42,6 +44,7 @@ class _TestFlowPageState extends State<TestFlowPage> {
             onNextPress: (request) async {
               session = await providerA.create(TestSession(
                 id: '${providerA.all.length}',
+                uid: currentUser.uid,
                 name: request.name,
                 birthDate: request.birthDate,
                 sex: request.sex,

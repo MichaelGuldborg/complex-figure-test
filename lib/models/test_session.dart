@@ -5,6 +5,7 @@ import 'package:reyo/models/serializeList.dart';
 class TestSession extends Identifiable {
   @override
   final String? id;
+  final String uid;
   final DateTime start;
   final String? name;
   final DateTime? birthDate;
@@ -15,6 +16,7 @@ class TestSession extends Identifiable {
 
   TestSession({
     required this.id,
+    required this.uid,
     required this.testIds,
     required this.start,
     this.name,
@@ -26,6 +28,7 @@ class TestSession extends Identifiable {
   Map<String, dynamic> toMap() {
     return {
       'id': id,
+      'uid': uid,
       'start': start,
       'name': name,
       'birthDate': birthDate,
@@ -38,6 +41,7 @@ class TestSession extends Identifiable {
   factory TestSession.fromMap(Map<String, dynamic> map) {
     return TestSession(
       id: map['id'],
+      uid: map['uid'],
       testIds: serializeListString(map['testIds']),
       start: (map['start'] as Timestamp).toDate(),
       name: map['name'],
