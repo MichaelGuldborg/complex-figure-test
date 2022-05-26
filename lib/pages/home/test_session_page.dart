@@ -45,46 +45,69 @@ class TestSessionPage extends StatelessWidget {
           )
         ],
       ),
-      body: ListView(
-        padding: EdgeInsets.all(24),
-        children: List.generate(values.length, (index) {
-          final e = values[index];
-
-          return Container(
-            margin: EdgeInsets.only(bottom: 24),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(4),
-              color: Colors.white,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withAlpha(25),
-                  blurRadius: 15,
-                )
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            padding: EdgeInsets.all(24),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Name: ${value.name}', style: TextStyle(fontSize: 24)),
+                Text('BirthDate: ${formatDate(value.birthDate)}',
+                    style: TextStyle(fontSize: 24)),
+                Text('Sex: ${value.sex}', style: TextStyle(fontSize: 24)),
+                Text('Education: ${value.education}',
+                    style: TextStyle(fontSize: 24)),
               ],
             ),
-            child: ListTile(
-              contentPadding: EdgeInsets.all(24),
-              leading: Container(
-                width: 100,
-                height: 100,
-                margin: EdgeInsets.only(right: 16),
-                alignment: Alignment.center,
-                child: Visibility(
-                  visible: e.image != null,
-                  child: Image.network(e.image ?? ''),
-                  replacement: Text('no preview'),
-                ),
-              ),
-              title: Text(
-                formatDate(e.start),
-                style: TextStyle(fontSize: 24),
-              ),
-              onTap: () {
-                Navigator.pushNamed(context, Routes.review, arguments: e);
-              },
+          ),
+          Expanded(
+            child: ListView(
+              padding: EdgeInsets.all(24),
+              children: List.generate(values.length, (index) {
+                final e = values[index];
+
+                return Container(
+                  margin: EdgeInsets.only(bottom: 24),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(4),
+                    color: Colors.white,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withAlpha(25),
+                        blurRadius: 15,
+                      )
+                    ],
+                  ),
+                  child: ListTile(
+                    contentPadding: EdgeInsets.all(24),
+                    leading: Container(
+                      width: 100,
+                      height: 100,
+                      margin: EdgeInsets.only(right: 16),
+                      alignment: Alignment.center,
+                      child: Visibility(
+                        visible: e.image != null,
+                        child: Image.network(e.image ?? ''),
+                        replacement: Text('no preview'),
+                      ),
+                    ),
+                    title: Text(
+                      formatDate(e.start),
+                      style: TextStyle(fontSize: 24),
+                    ),
+                    onTap: () {
+                      Navigator.pushNamed(context, Routes.review, arguments: e);
+                    },
+                  ),
+                );
+              }),
             ),
-          );
-        }),
+          ),
+        ],
       ),
     );
   }

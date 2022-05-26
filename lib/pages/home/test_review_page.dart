@@ -236,9 +236,10 @@ class InfoBox extends StatelessWidget {
   }
 }
 
-String formatDate(DateTime e) {
-  final year = e.year;
-  final month = '${e.month}'.padLeft(2, '0');
-  final day = '${e.day}'.padLeft(2, '0');
+String formatDate(DateTime? date) {
+  if(date == null) return '';
+  final year = date.year;
+  final month = '${date.month}'.padLeft(2, '0');
+  final day = '${date.day}'.padLeft(2, '0');
   return '$day/$month/$year';
 }

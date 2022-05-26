@@ -41,7 +41,9 @@ class TestSession extends Identifiable {
       testIds: serializeListString(map['testIds']),
       start: (map['start'] as Timestamp).toDate(),
       name: map['name'],
-      // birthDate: (map['birthDate'] as Timestamp).toDate(),
+      birthDate: map['birthDate'] != null
+          ? (map['birthDate'] as Timestamp).toDate()
+          : null,
       sex: map['sex'],
       education: map['education'],
     );
