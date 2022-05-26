@@ -41,7 +41,7 @@ class TestSession extends Identifiable {
   factory TestSession.fromMap(Map<String, dynamic> map) {
     return TestSession(
       id: map['id'],
-      uid: map['uid'],
+      uid: map['uid'] ?? '',
       testIds: serializeListString(map['testIds']),
       start: (map['start'] as Timestamp).toDate(),
       name: map['name'],

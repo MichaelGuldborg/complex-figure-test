@@ -18,7 +18,7 @@ class TestSessionService extends FirestoreCrudService<TestSession> {
   Future<List<TestSession>> readAll() async {
     final currentUser = FirebaseAuth.instance.currentUser;
     final response = await collection
-        .where('userId', isEqualTo: currentUser!.uid)
+        // .where('userId', isEqualTo: currentUser!.uid)
         .orderBy('start', descending: true)
         .get();
     return response.docs.map((e) => e.data()).toList();

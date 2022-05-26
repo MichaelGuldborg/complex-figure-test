@@ -1,0 +1,22 @@
+[build]
+  command = "chmod u+x netlify_build_web.sh && ./netlify_build_web.sh"
+  publish = "build/web"
+
+[context.production]
+    [context.production.environment]
+        API_ENV = "production"
+
+[context.staging]
+    [context.staging.environment]
+        API_ENV = "staging"
+
+[context.develop]
+    [context.develop.environment]
+        API_ENV = "staging"
+
+[[headers]]
+    for = "/*"
+    [headers.values]
+    cache-control = '''
+        max-age=0,
+        must-revalidate'''
