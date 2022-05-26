@@ -19,7 +19,7 @@ class ComplexFigureTestService extends FirestoreCrudService<ComplexFigureTest> {
 
   @override
   Future<List<ComplexFigureTest>> readAll() async {
-    final response = await collection.orderBy('start', descending: true).get();
+    final response = await collection.orderBy('start', descending: false).get();
     return response.docs.map((e) => e.data()).toList();
   }
 

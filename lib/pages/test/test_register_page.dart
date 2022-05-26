@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:reyo/components/bottom_sheet/bottom_sheet_select.dart';
 import 'package:reyo/constants/theme_colors.dart';
 import 'package:reyo/pages/home/test_review_page.dart';
-import 'package:reyo/providers/config_provider.dart';
 
 class TestSessionForm {
   final String? name;
@@ -18,8 +17,7 @@ class TestSessionForm {
   });
 }
 
-class TestRegisterPage extends StatelessWidget {
-  final now = DateTime.now();
+class TestRegisterPage extends StatefulWidget {
   final void Function(TestSessionForm request) onNextPress;
 
   TestRegisterPage({
@@ -27,7 +25,12 @@ class TestRegisterPage extends StatelessWidget {
     required this.onNextPress,
   }) : super(key: key);
 
-  final _figure = TextEditingController()..text = 'ROCFT';
+  @override
+  State<TestRegisterPage> createState() => _TestRegisterPageState();
+}
+
+class _TestRegisterPageState extends State<TestRegisterPage> {
+  final now = DateTime.now();
   final _name = TextEditingController();
   final _birthDate = TextEditingController();
   final _sex = TextEditingController();
@@ -36,8 +39,6 @@ class TestRegisterPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final settings = SettingsProvider.of(context);
-
     return Scaffold(
       body: Container(
         alignment: Alignment.center,
@@ -47,36 +48,6 @@ class TestRegisterPage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // Container(
-              //   margin: EdgeInsets.only(bottom: 16),
-              //   child: TextField(
-              //     controller: _figure,
-              //     keyboardType: TextInputType.text,
-              //     decoration: InputDecoration(
-              //       hintText: 'Figure',
-              //     ),
-              //     onTap: () async {
-              //       final options = [
-              //         'Rey-Osterrieth',
-              //         'Taylor',
-              //         'Modified Taylor',
-              //         'Simplified Taylor',
-              //         'Mark'
-              //         'Medical College of Georgia',
-              //         'Benson',
-              //         'Other',
-              //       ];
-              //       final index = await showSelectBottomSheet(
-              //         context,
-              //         title: 'Select complex figure',
-              //         options: options,
-              //       );
-              //       if (index != null) {
-              //         _figure.text = options[index];
-              //       }
-              //     },
-              //   ),
-              // ),
               Container(
                 margin: EdgeInsets.only(bottom: 16),
                 child: TextField(
@@ -170,7 +141,7 @@ class TestRegisterPage extends StatelessWidget {
                     style: TextStyle(color: Colors.white),
                   ),
                   onPressed: () async {
-                    onNextPress(TestSessionForm(
+                    widget.onNextPress(TestSessionForm(
                       name: _name.text.trim(),
                       birthDate: _birthDateValue,
                       sex: _sex.text.trim(),

@@ -50,7 +50,11 @@ class _TestDrawPageState extends State<TestDrawPage> {
                     margin: EdgeInsets.only(bottom: 16, right: 16),
                     backgroundColor: ThemeColors.borderGrey,
                     onTap: () {
-                      // TODO TRACK UNDO
+                      events.add(MouseEvent(
+                        type: MouseEventType.UNDO,
+                        position: events.last.position,
+                        timestamp: DateTime.now(),
+                      ));
                       _controller.undo();
                     },
                     child: Icon(Icons.undo, color: Colors.black),

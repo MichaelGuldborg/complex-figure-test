@@ -53,6 +53,8 @@ class ComplexFigureTestView extends StatelessWidget {
         // nothing
       } else if (e.type == MouseEventType.TAP) {
         // nothing
+      } else if (e.type == MouseEventType.UNDO) {
+        result.removeLast();
       }
       return result;
     });

@@ -6,6 +6,7 @@ enum MouseEventType {
   PAN_START,
   PAN_UPDATE,
   PAN_END,
+  UNDO,
 }
 
 class MouseEvent {

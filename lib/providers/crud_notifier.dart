@@ -69,8 +69,7 @@ class CrudNotifier<T extends Identifiable> extends ChangeNotifier
 
   @override
   Future delete(String? id) async {
-    final response = await service.delete(id);
-    if (response == null) return;
+    await service.delete(id);
     _values.removeWhere((e) => e.id == id);
     notifyListeners();
   }
