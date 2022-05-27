@@ -59,23 +59,6 @@ class _TestDrawPageState extends State<TestDrawPage> {
                     },
                     child: Icon(Icons.undo, color: Colors.black),
                   ),
-                  DrawActionButton(
-                    visible: settings.eraser,
-                    margin: EdgeInsets.only(bottom: 16, right: 16),
-                    backgroundColor: ThemeColors.borderGrey,
-                    onTap: () {
-                      // TODO TRACK ERASER
-                      setState(() {
-                        final isEraseMode = _controller.eraseMode;
-                        _controller.thickness = isEraseMode ? 4.0 : 24.0;
-                        _controller.eraseMode = !isEraseMode;
-                      });
-                    },
-                    child: Icon(
-                      _controller.eraseMode ? Icons.draw : FontAwesome.eraser,
-                      color: Colors.black,
-                    ),
-                  ),
                 ],
               ),
             ),

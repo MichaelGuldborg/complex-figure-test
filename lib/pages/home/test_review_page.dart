@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:reyo/components/info_box.dart';
 import 'package:reyo/models/complex_figure_test.dart';
 import 'package:reyo/pages/home/complex_figure_test_view.dart';
 import 'package:reyo/providers/complex_figure_test_provider.dart';
@@ -195,46 +196,7 @@ class _TestReviewPageState extends State<TestReviewPage> {
   }
 }
 
-class InfoBox extends StatelessWidget {
-  const InfoBox({
-    Key? key,
-    required this.title,
-    required this.subtitle,
-  }) : super(key: key);
-  final String title;
-  final String subtitle;
 
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.only(right: 16),
-      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            margin: EdgeInsets.only(bottom: 4),
-            child: Text(
-              title,
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-          Text(
-            subtitle,
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Colors.black54,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
 
 String formatDate(DateTime? date) {
   if(date == null) return '';
