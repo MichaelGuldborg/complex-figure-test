@@ -9,8 +9,9 @@ import 'package:reyo/pages/auth/SplashPage.dart';
 import 'package:reyo/pages/auth/forgot_password_page.dart';
 import 'package:reyo/pages/auth/login_page.dart';
 import 'package:reyo/pages/home/home_page.dart';
-import 'package:reyo/pages/home/test_session_page.dart';
-import 'package:reyo/pages/home/test_review_page.dart';
+import 'package:reyo/pages/home/review_page.dart';
+import 'package:reyo/pages/home/session_page.dart';
+import 'package:reyo/pages/home/playback_page.dart';
 import 'package:reyo/pages/settings_page.dart';
 import 'package:reyo/pages/test/test_flow_page.dart';
 import 'package:reyo/providers/config_provider.dart';
@@ -50,8 +51,9 @@ class App extends StatelessWidget {
           Routes.register: (context) => RegisterPage(),
           Routes.forgotPassword: (context) => ForgotPasswordPage(),
           Routes.home: (context) => HomePage(),
-          Routes.session: (context) => TestSessionPage(),
-          Routes.review: (context) => TestReviewPage(),
+          Routes.session: (context) => SessionPage(),
+          Routes.playback: (context) => PlaybackPage(),
+          Routes.review: (context) => ReviewPage(),
           Routes.test: (context) => TestFlowPage(),
         },
         builder: BotToastInit(),

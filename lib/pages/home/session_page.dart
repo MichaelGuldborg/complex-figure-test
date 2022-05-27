@@ -3,24 +3,18 @@ import 'package:reyo/components/bottom_sheet/bottom_sheet_confirm_negative.dart'
 import 'package:reyo/components/info_box.dart';
 import 'package:reyo/components/primary_button.dart';
 import 'package:reyo/constants/routes.dart';
+import 'package:reyo/functions/toAge.dart';
+import 'package:reyo/models/complex_figure_test.dart';
 import 'package:reyo/models/test_session.dart';
 import 'package:reyo/providers/complex_figure_test_provider.dart';
 import 'package:reyo/providers/test_session_provider.dart';
 
-String toAge(DateTime? date) {
-  if (date == null) return '';
-  final now = DateTime.now();
-  final nowMillis = now.millisecondsSinceEpoch;
-  final millis = date.millisecondsSinceEpoch;
-  final diff = nowMillis - millis;
-  return (diff / 31557600000).floor().toString();
-}
-
-class TestSessionPage extends StatelessWidget {
-  const TestSessionPage({Key? key}) : super(key: key);
+class SessionPage extends StatelessWidget {
+  const SessionPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    var isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
     final argument = ModalRoute.of(context)?.settings.arguments as TestSession;
     final value = argument;
     final providerA = TestSessionProvider.of(context);
@@ -65,7 +59,6 @@ class TestSessionPage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 InfoBox(title: 'Name', subtitle: '${value.name}'),
-                // InfoBox(title: 'BirthDate', subtitle: formatDate(value.birthDate)),
                 InfoBox(title: 'Age', subtitle: toAge(value.birthDate)),
                 InfoBox(title: 'Sex', subtitle: '${value.sex}'),
                 InfoBox(title: 'Education', subtitle: '${value.education}'),
@@ -74,19 +67,19 @@ class TestSessionPage extends StatelessWidget {
           ),
           Expanded(
             child: GridView.count(
-              crossAxisCount: 3,
+              crossAxisCount: isPortrait ? 2 : 3,
               childAspectRatio: 1,
               shrinkWrap: true,
               padding: EdgeInsets.all(24),
               crossAxisSpacing: 32,
               mainAxisSpacing: 32,
               children: List.generate(values.length, (index) {
-                final e = values[index];
+                final ComplexFigureTest e = values[index];
                 final title =
                     ['Copy', 'Immediate recall', 'Delayed recall'][index];
                 return GestureDetector(
                   onTap: () {
-                    Navigator.pushNamed(context, Routes.review, arguments: e);
+                    Navigator.pushNamed(context, Routes.playback, arguments: e);
                   },
                   child: Container(
                     padding: EdgeInsets.all(24),
@@ -101,13 +94,25 @@ class TestSessionPage extends StatelessWidget {
                     ]),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          title,
-                          style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.w600,
-                          ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              title,
+                              style: TextStyle(
+                                fontSize: 24,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            PrimaryButton.grey(
+                              text: 'score',
+                              onPressed: () {
+                                Navigator.pushNamed(context, Routes.review, arguments: e);
+                              },
+                            )
+                          ],
                         ),
                         Expanded(
                           child: Container(
@@ -123,7 +128,7 @@ class TestSessionPage extends StatelessWidget {
                           margin: EdgeInsets.only(bottom: 16),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: const [
+                            children: [
                               Text(
                                 'Accuracy:',
                                 style: TextStyle(
@@ -132,7 +137,7 @@ class TestSessionPage extends StatelessWidget {
                                 ),
                               ),
                               Text(
-                                '26/36',
+                                e.accuracy == null ? '-' : '${e.accuracy}/36',
                                 style: TextStyle(
                                   fontSize: 20,
                                   fontWeight: FontWeight.w600,
@@ -143,7 +148,7 @@ class TestSessionPage extends StatelessWidget {
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: const [
+                          children: [
                             Text(
                               'Strategy:',
                               style: TextStyle(
@@ -152,7 +157,7 @@ class TestSessionPage extends StatelessWidget {
                               ),
                             ),
                             Text(
-                              '22/36',
+                              e.strategy == null ? '-' : '${e.strategy}/36',
                               style: TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.w600,
@@ -160,13 +165,6 @@ class TestSessionPage extends StatelessWidget {
                             ),
                           ],
                         ),
-                        // Text(
-                        //   'Not scored',
-                        //   style: TextStyle(
-                        //     fontSize: 18,
-                        //     fontWeight: FontWeight.w600,
-                        //   ),
-                        // ),
                       ],
                     ),
                   ),

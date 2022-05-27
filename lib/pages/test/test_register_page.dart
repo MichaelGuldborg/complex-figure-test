@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:reyo/components/bottom_sheet/bottom_sheet_select.dart';
 import 'package:reyo/constants/theme_colors.dart';
-import 'package:reyo/pages/home/test_review_page.dart';
+import 'package:reyo/pages/home/playback_page.dart';
 
 class TestSessionForm {
   final String? name;

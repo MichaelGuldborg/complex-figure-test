@@ -8,6 +8,7 @@ class Routes {
 
   static const home = "/home";
   static const session = "/session";
+  static const playback = "/playback";
   static const review = "/review";
   static const test = "/test";
 

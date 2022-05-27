@@ -5,18 +5,34 @@ import 'package:reyo/models/identifyable.dart';
 import 'package:reyo/models/mouse_event.dart';
 import 'package:reyo/models/serializeList.dart';
 
+class Stroke {
+  dynamic from;
+  dynamic to;
+  dynamic start;
+  dynamic end;
+
+
+
+}
+
 class ComplexFigureTest extends Identifiable {
   @override
   final String id;
   final String? type; // copy, immediate-recall, delayed-recall
+  final String? orientation;
   final int width;
   final int height;
-  final String? orientation;
-  final List<MouseEvent> events;
   final DateTime start;
   final DateTime end;
   final String? image;
   final Picture? imageFile;
+
+  final List<MouseEvent> events;
+  final List<dynamic> stokes;
+
+  get bool => accuracy != null && strategy != null;
+  final int? accuracy;
+  final int? strategy;
 
 
   int get duration {
@@ -28,12 +44,15 @@ class ComplexFigureTest extends Identifiable {
   ComplexFigureTest({
     required this.id,
     this.type,
+    this.orientation,
     required this.start,
     required this.end,
     this.width = 0,
     this.height = 0,
-    this.orientation,
     this.events = const [],
+    this.stokes = const [],
+    this.accuracy,
+    this.strategy,
     this.image,
     this.imageFile,
   });
@@ -46,6 +65,8 @@ class ComplexFigureTest extends Identifiable {
       'end': end,
       'image': image,
       'events': events.map((e) => e.toMap()).toList(),
+      'accuracy': accuracy,
+      'strategy': strategy,
     };
   }
 
@@ -58,6 +79,8 @@ class ComplexFigureTest extends Identifiable {
       height: map['height'],
       image: map['image'],
       events: serializeList(map['events'], MouseEvent.fromMap),
+      accuracy: map['accuracy'],
+      strategy: map['strategy'],
     );
   }
 }
