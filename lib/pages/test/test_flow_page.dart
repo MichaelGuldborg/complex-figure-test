@@ -57,6 +57,7 @@ class _TestFlowPageState extends State<TestFlowPage> {
           ),
           TestDrawPage(
             onNextPress: (request) async {
+              request.type = 'copy';
               final value = await providerB.createWithImage(request);
               if (value == null) return showError('Something went wrong');
               session?.testIds.add(value.id);
@@ -69,6 +70,7 @@ class _TestFlowPageState extends State<TestFlowPage> {
           ),
           TestDrawPage(
             onNextPress: (request) async {
+              request.type = 'immediate-recall';
               final value = await providerB.createWithImage(request);
               if (value == null) return showError('Something went wrong');
               session?.testIds.add(value.id);
@@ -81,6 +83,7 @@ class _TestFlowPageState extends State<TestFlowPage> {
           ),
           TestDrawPage(
             onNextPress: (request) async {
+              request.type = 'delayed-recall';
               final value = await providerB.createWithImage(request);
               if (value == null) return showError('Something went wrong');
               session?.testIds.add(value.id);

@@ -18,7 +18,7 @@ class Stroke {
 class ComplexFigureTest extends Identifiable {
   @override
   final String id;
-  final String? type; // copy, immediate-recall, delayed-recall
+  String? type; // copy, immediate-recall, delayed-recall
   final String? orientation;
   final int width;
   final int height;
@@ -59,6 +59,7 @@ class ComplexFigureTest extends Identifiable {
 
   Map<String, dynamic> toMap() {
     return {
+      'type': type,
       'height': height,
       'width': width,
       'start': start,
@@ -73,6 +74,7 @@ class ComplexFigureTest extends Identifiable {
   factory ComplexFigureTest.fromMap(Map<String, dynamic> map) {
     return ComplexFigureTest(
       id: map['id'],
+      type: map['type'],
       start: (map['start'] as Timestamp).toDate(),
       end: (map['end'] as Timestamp).toDate(),
       width: map['width'],
