@@ -1,6 +1,3 @@
-
-
-
 import 'package:flutter/material.dart';
 import 'package:rainbow_color/rainbow_color.dart';
 

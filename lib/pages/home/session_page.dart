@@ -109,7 +109,8 @@ class SessionPage extends StatelessWidget {
                             PrimaryButton.grey(
                               text: 'score',
                               onPressed: () {
-                                Navigator.pushNamed(context, Routes.review, arguments: e);
+                                Navigator.pushNamed(context, Routes.review,
+                                    arguments: e);
                               },
                             )
                           ],

@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:reyo/components/info_box.dart';
 import 'package:reyo/models/complex_figure_test.dart';
 import 'package:reyo/pages/home/path_painter.dart';
-import 'package:reyo/pages/home/review_page.dart';
 import 'package:reyo/providers/complex_figure_test_provider.dart';
 
 final colors = [

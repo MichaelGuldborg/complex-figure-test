@@ -1,13 +1,10 @@
 import 'dart:math';
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:rainbow_color/rainbow_color.dart';
 import 'package:reyo/components/primary_button.dart';
 import 'package:reyo/functions/capitalize.dart';
 import 'package:reyo/functions/closestPath.dart';
 import 'package:reyo/models/complex_figure_test.dart';
-import 'package:reyo/models/mouse_event.dart';
 import 'package:reyo/pages/home/path_painter.dart';
 import 'package:reyo/providers/complex_figure_test_provider.dart';
 
@@ -179,9 +176,3 @@ class _ReviewPageState extends State<ReviewPage> {
     );
   }
 }
-
-
-
-
-
-
