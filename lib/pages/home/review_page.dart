@@ -47,6 +47,12 @@ class _ReviewPageState extends State<ReviewPage> {
       value.width.toDouble() * scale,
       value.height.toDouble() * scale,
     );
+    void _done() {
+      provider.update(value.id, {
+        'accuracy': score,
+      });
+      Navigator.pop(context);
+    }
 
     void _previous() {
       setState(() {
@@ -63,6 +69,9 @@ class _ReviewPageState extends State<ReviewPage> {
         selected.clear();
         currentIndex = min(paths.length - 1, currentIndex + 1);
       });
+      if (currentIndex == paths.length - 1) {
+        _done();
+      }
     }
 
     return Scaffold(
@@ -74,12 +83,7 @@ class _ReviewPageState extends State<ReviewPage> {
             margin: EdgeInsets.only(right: 24),
             child: PrimaryButton.green(
               text: 'Done',
-              onPressed: () {
-                provider.update(value.id, {
-                  'accuracy': score,
-                });
-                Navigator.pop(context);
-              },
+              onPressed: _done,
             ),
           )
         ],
@@ -103,7 +107,7 @@ class _ReviewPageState extends State<ReviewPage> {
                   Container(
                     alignment: Alignment.centerRight,
                     child: Text(
-                      '$currentIndex/${paths.length - 1}',
+                      '${currentIndex + 1}/${paths.length}',
                       style: TextStyle(
                         fontSize: 24,
                       ),
