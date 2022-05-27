@@ -4,8 +4,11 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:rainbow_color/rainbow_color.dart';
 import 'package:reyo/components/primary_button.dart';
+import 'package:reyo/functions/capitalize.dart';
+import 'package:reyo/functions/closestPath.dart';
 import 'package:reyo/models/complex_figure_test.dart';
 import 'package:reyo/models/mouse_event.dart';
+import 'package:reyo/pages/home/path_painter.dart';
 import 'package:reyo/providers/complex_figure_test_provider.dart';
 
 enum ScoreType {
@@ -42,7 +45,7 @@ class _ReviewPageState extends State<ReviewPage> {
     final value = argument as ComplexFigureTest;
     final provider = ComplexFigureTestProvider.of(context);
     final scale = 0.5;
-    final paths = toPaths(value, scale: scale);
+    final paths = value.toPaths(scale: scale);
     final size = Size(
       value.width.toDouble() * scale,
       value.height.toDouble() * scale,
@@ -76,7 +79,7 @@ class _ReviewPageState extends State<ReviewPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(value.type ?? 'Score complex figure test'),
+        title: Text(capitalize(value.type?.replaceAll('-', ' '))),
         // title: Text(value.id),
         actions: [
           Container(
@@ -125,7 +128,7 @@ class _ReviewPageState extends State<ReviewPage> {
                 children: [
                   GestureDetector(
                     onTapUp: (e) {
-                      final index = getClosestPath(paths, e.localPosition);
+                      final index = closestPath(paths, e.localPosition);
                       setState(() {
                         if (selected.contains(index)) {
                           selected.remove(index);
@@ -177,139 +180,8 @@ class _ReviewPageState extends State<ReviewPage> {
   }
 }
 
-class PathPainter extends CustomPainter {
-  static Paint get backgroundPaint {
-    final paint = Paint();
-    paint.blendMode = BlendMode.dstOver;
-    paint.color = Colors.white;
-    return paint;
-  }
 
-  final List<Path> paths;
-  final List<Color> colors;
-  final List<int> selected;
-  final bool selectMode;
 
-  PathPainter({
-    required this.paths,
-    this.colors = const [],
-    this.selected = const [],
-    this.selectMode = true,
-  }) : super();
 
-  Paint getPaint(int index) {
-    final paint = Paint();
-    paint.blendMode = BlendMode.srcOver;
-    paint.color = Colors.black;
-    paint.style = PaintingStyle.stroke;
-    paint.strokeWidth = 4.0;
 
-    // if valid selected index fade other lines
-    if (selectMode) {
-      final isActive = selected.contains(index);
-      paint.color = isActive ? Colors.black : Colors.black26;
-      return paint;
-    }
 
-    // if no colors just return black paint
-    if (colors.isEmpty) {
-      return paint;
-    }
-
-    // select relative percent color in rainbow
-    final percent = index / paths.length;
-    final tween = RainbowColorTween(colors);
-    paint.color = tween.transform(percent);
-    return paint;
-  }
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    canvas.saveLayer(Offset.zero & size, Paint());
-
-    for (var i = 0; i < paths.length; i++) {
-      final path = paths[i];
-      final paint = getPaint(i);
-      canvas.drawPath(path, paint);
-    }
-
-    final background = Rect.fromLTWH(0.0, 0.0, size.width, size.height);
-    canvas.drawRect(background, backgroundPaint);
-    canvas.restore();
-  }
-
-  @override
-  bool shouldRepaint(PathPainter oldDelegate) {
-    return true;
-  }
-}
-
-int getClosestPath(List<Path> paths, Offset offset) {
-  int index = 0;
-  double minDist = double.maxFinite;
-  for (int i = 0; i < paths.length; i++) {
-    final path = paths[i];
-    final dist = getDistanceToPath(path, offset);
-    if (dist < minDist) {
-      index = i;
-      minDist = dist;
-    }
-  }
-  return index;
-}
-
-double getDistanceToPath(Path path, Offset offset) {
-  PathMetrics pathMetrics = path.computeMetrics();
-  double minDistance = double.maxFinite;
-  for (var element in pathMetrics) {
-    for (var i = 0; i < element.length; i++) {
-      final tangent = element.getTangentForOffset(i.toDouble());
-      final position = tangent?.position;
-      if (position == null) continue;
-      final distance = getDistance(position, offset);
-      if (distance < minDistance) {
-        minDistance = distance;
-      }
-    }
-  }
-  return minDistance;
-}
-
-double getDistance(Offset a, Offset b) {
-  double dx = a.dx - b.dx;
-  double dy = a.dy - b.dy;
-  double distance = sqrt(dx * dx + dy * dy);
-  return distance.abs();
-}
-
-List<Path> toPaths(
-  ComplexFigureTest value, {
-  double time = double.maxFinite,
-  double scale = 1,
-}) {
-  final startMillis = value.start.microsecondsSinceEpoch;
-  final initial = <Path>[];
-  return value.events.fold(initial, (List<Path> result, e) {
-    final _millis = e.timestamp.microsecondsSinceEpoch - startMillis;
-    // if (_millis > time) return result;
-
-    if (e.type == MouseEventType.PAN_START) {
-      final path = Path();
-      final dx = e.position.dx * scale;
-      final dy = e.position.dy * scale;
-      path.moveTo(dx, dy);
-      result.add(path);
-    } else if (e.type == MouseEventType.PAN_UPDATE) {
-      final dx = e.position.dx * scale;
-      final dy = e.position.dy * scale;
-      result.last.lineTo(dx, dy);
-    } else if (e.type == MouseEventType.PAN_END) {
-      // nothing
-    } else if (e.type == MouseEventType.TAP) {
-      // nothing
-    } else if (e.type == MouseEventType.UNDO) {
-      result.removeLast();
-    }
-    return result;
-  });
-}

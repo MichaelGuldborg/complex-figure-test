@@ -10,9 +10,6 @@ class Stroke {
   dynamic to;
   dynamic start;
   dynamic end;
-
-
-
 }
 
 class ComplexFigureTest extends Identifiable {
@@ -33,7 +30,6 @@ class ComplexFigureTest extends Identifiable {
   get bool => accuracy != null && strategy != null;
   final int? accuracy;
   final int? strategy;
-
 
   int get duration {
     final startMillis = start.microsecondsSinceEpoch;
@@ -56,6 +52,37 @@ class ComplexFigureTest extends Identifiable {
     this.image,
     this.imageFile,
   });
+
+  List<Path> toPaths({
+    double time = double.maxFinite,
+    double scale = 1,
+  }) {
+    final startMillis = start.microsecondsSinceEpoch;
+    final initial = <Path>[];
+    return events.fold(initial, (List<Path> result, e) {
+      final _millis = e.timestamp.microsecondsSinceEpoch - startMillis;
+      if (_millis > time) return result;
+
+      if (e.type == MouseEventType.PAN_START) {
+        final path = Path();
+        final dx = e.position.dx * scale;
+        final dy = e.position.dy * scale;
+        path.moveTo(dx, dy);
+        result.add(path);
+      } else if (e.type == MouseEventType.PAN_UPDATE) {
+        final dx = e.position.dx * scale;
+        final dy = e.position.dy * scale;
+        result.last.lineTo(dx, dy);
+      } else if (e.type == MouseEventType.PAN_END) {
+        // nothing
+      } else if (e.type == MouseEventType.TAP) {
+        // nothing
+      } else if (e.type == MouseEventType.UNDO) {
+        result.removeLast();
+      }
+      return result;
+    });
+  }
 
   Map<String, dynamic> toMap() {
     return {
@@ -86,4 +113,3 @@ class ComplexFigureTest extends Identifiable {
     );
   }
 }
-

@@ -3,7 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:reyo/components/info_box.dart';
 import 'package:reyo/models/complex_figure_test.dart';
-import 'package:reyo/pages/home/playback_view.dart';
+import 'package:reyo/pages/home/path_painter.dart';
+import 'package:reyo/pages/home/review_page.dart';
 import 'package:reyo/providers/complex_figure_test_provider.dart';
 
 final colors = [
@@ -113,13 +114,14 @@ class _PlaybackPageState extends State<PlaybackPage> {
               ),
             ),
             Expanded(
-              child: Container(
-                // color: Color(0xfff9f9f9),
-                decoration: BoxDecoration(border: Border.all()),
-                child: ComplexFigureTestView(
-                  data: value,
-                  time: _time,
-                  scale: 0.5,
+              child: CustomPaint(
+                size: Size(
+                  value.width.toDouble() * 0.5,
+                  value.height.toDouble() * 0.5,
+                ),
+                painter: PathPainter(
+                  selectMode: false,
+                  paths: value.toPaths(scale: 0.5, time: _time),
                   colors: enableColor ? colors : [],
                 ),
               ),
