@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:fluttericon/font_awesome_icons.dart';
+import 'package:reyo/components/LoadingOverlay.dart';
 import 'package:reyo/components/button.dart';
 import 'package:reyo/constants/assets.dart';
 import 'package:reyo/constants/theme_colors.dart';
@@ -29,6 +29,7 @@ class _TestDrawPageState extends State<TestDrawPage> {
     ..thickness = 4.0;
 
   final List<MouseEvent> events = [];
+  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -36,54 +37,58 @@ class _TestDrawPageState extends State<TestDrawPage> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       backgroundColor: Colors.white,
-      body: SafeArea(
-        child: Stack(
-          children: [
-            buildView(settings),
-            Positioned(
-              bottom: 0,
-              right: 0,
-              child: Row(
-                children: [
-                  DrawActionButton(
-                    visible: settings.undo,
-                    margin: EdgeInsets.only(bottom: 16, right: 16),
-                    backgroundColor: ThemeColors.borderGrey,
-                    onTap: () {
-                      events.add(MouseEvent(
-                        type: MouseEventType.UNDO,
-                        position: events.last.position,
-                        timestamp: DateTime.now(),
-                      ));
-                      _controller.undo();
-                    },
-                    child: Icon(Icons.undo, color: Colors.black),
-                  ),
-                ],
+      body: LoadingOverlay(
+        loading: isLoading,
+        child: SafeArea(
+          child: Stack(
+            children: [
+              buildView(settings),
+              Positioned(
+                bottom: 0,
+                right: 0,
+                child: Row(
+                  children: [
+                    DrawActionButton(
+                      visible: settings.undo,
+                      margin: EdgeInsets.only(bottom: 16, right: 16),
+                      backgroundColor: ThemeColors.borderGrey,
+                      onTap: () {
+                        events.add(MouseEvent(
+                          type: MouseEventType.UNDO,
+                          position: events.last.position,
+                          timestamp: DateTime.now(),
+                        ));
+                        _controller.undo();
+                      },
+                      child: Icon(Icons.undo, color: Colors.black),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            Positioned(
-              top: 0,
-              right: 0,
-              child: DrawActionButton(
-                margin: EdgeInsets.only(top: 16, right: 16),
-                backgroundColor: ThemeColors.red,
-                child: Icon(Icons.stop, color: Colors.white),
-                onTap: () async {
-                  final details = _controller.createPicture();
-                  widget.onNextPress(ComplexFigureTest(
-                    id: '${Random().nextInt(100000)}',
-                    start: events.first.timestamp,
-                    end: events.last.timestamp,
-                    width: details.width,
-                    height: details.height,
-                    events: events,
-                    imageFile: details.picture,
-                  ));
-                },
+              Positioned(
+                top: 0,
+                right: 0,
+                child: DrawActionButton(
+                  margin: EdgeInsets.only(top: 16, right: 16),
+                  backgroundColor: ThemeColors.red,
+                  child: Icon(Icons.stop, color: Colors.white),
+                  onTap: () async {
+                    setState(() => isLoading = true);
+                    final details = _controller.createPicture();
+                    widget.onNextPress(ComplexFigureTest(
+                      id: '${Random().nextInt(100000)}',
+                      start: events.first.timestamp,
+                      end: events.last.timestamp,
+                      width: details.width,
+                      height: details.height,
+                      events: events,
+                      imageFile: details.picture,
+                    ));
+                  },
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
