@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:reyo/components/primary_button.dart';
+import 'package:reyo/functions/capitalize.dart';
 import 'package:reyo/functions/closestPath.dart';
 import 'package:reyo/models/complex_figure_test.dart';
 import 'package:reyo/pages/home/path_painter.dart';
@@ -102,7 +103,7 @@ class _ReviewPageState extends State<ReviewPage> {
                 children: [
                   Container(
                     child: Text(
-                      'Christian\'s ${value.type} drawing',
+                      '${capitalize(value.type?.replaceAll('-', ' '))} drawing',
                       style: TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.w500,
