@@ -12,6 +12,7 @@ class PathPainter extends CustomPainter {
   final List<Path> paths;
   final List<Color> colors;
   final List<int> selected;
+  final Map<int, Color> colorMap;
   final bool selectMode;
 
   PathPainter({
@@ -19,6 +20,7 @@ class PathPainter extends CustomPainter {
     this.colors = const [],
     this.selected = const [],
     this.selectMode = true,
+    this.colorMap = const {},
   }) : super();
 
   Paint getPaint(int index) {
@@ -32,6 +34,7 @@ class PathPainter extends CustomPainter {
     if (selectMode) {
       final isActive = selected.contains(index);
       paint.color = isActive ? Colors.black : Colors.black26;
+      paint.color = colorMap[index] ?? paint.color;
       return paint;
     }
 

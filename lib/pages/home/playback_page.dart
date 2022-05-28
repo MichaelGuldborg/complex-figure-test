@@ -74,7 +74,7 @@ class _PlaybackPageState extends State<PlaybackPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Review'),
+        title: Text('Test playback'),
       ),
       body: Container(
         padding: EdgeInsets.symmetric(horizontal: 24, vertical: 24),

@@ -28,8 +28,8 @@ class ComplexFigureTest extends Identifiable {
   final List<dynamic> stokes;
 
   get bool => accuracy != null && strategy != null;
-  final int? accuracy;
-  final int? strategy;
+  final double? accuracy;
+  final double? strategy;
 
   int get duration {
     final startMillis = start.microsecondsSinceEpoch;

@@ -24,8 +24,20 @@ class PrimaryButton extends StatelessWidget {
     return PrimaryButton(
       text: text,
       onPressed: onPressed,
-      color: ThemeColors.green,
-      textColor: Colors.white,
+      color: ThemeColors.lightGreen,
+      textColor: ThemeColors.darkGreen,
+    );
+  }
+
+  static Widget yellow({
+    required text,
+    required onPressed,
+  }) {
+    return PrimaryButton(
+      text: text,
+      onPressed: onPressed,
+      color: ThemeColors.lightYellow,
+      textColor: ThemeColors.darkYellow,
     );
   }
 

@@ -3,6 +3,8 @@ import 'package:reyo/components/bottom_sheet/bottom_sheet_confirm_negative.dart'
 import 'package:reyo/components/info_box.dart';
 import 'package:reyo/components/primary_button.dart';
 import 'package:reyo/constants/routes.dart';
+import 'package:reyo/constants/theme_colors.dart';
+import 'package:reyo/functions/capitalize.dart';
 import 'package:reyo/functions/toAge.dart';
 import 'package:reyo/models/complex_figure_test.dart';
 import 'package:reyo/models/test_session.dart';
@@ -25,10 +27,7 @@ class SessionPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Container(
-          padding: EdgeInsets.all(8),
-          child: Text('${value.name}'),
-        ),
+        title: Text('Test session'),
         actions: [
           Container(
             margin: EdgeInsets.only(right: 24),
@@ -68,86 +67,83 @@ class SessionPage extends StatelessWidget {
           Expanded(
             child: GridView.count(
               crossAxisCount: isPortrait ? 2 : 3,
-              childAspectRatio: 1,
+              childAspectRatio: 3 / 4,
               shrinkWrap: true,
               padding: EdgeInsets.all(24),
               crossAxisSpacing: 32,
               mainAxisSpacing: 32,
               children: List.generate(values.length, (index) {
                 final ComplexFigureTest e = values[index];
-                final title =
-                    ['Copy', 'Immediate recall', 'Delayed recall'][index];
-                return GestureDetector(
-                  onTap: () {
-                    Navigator.pushNamed(context, Routes.playback, arguments: e);
-                  },
-                  child: Container(
-                    padding: EdgeInsets.all(24),
-                    decoration:
-                        BoxDecoration(color: Colors.white, boxShadow: const [
-                      BoxShadow(
-                        color: Color(0x19000000),
-                        offset: Offset(0, 2),
-                        blurRadius: 10,
-                        spreadRadius: 0,
+                return Container(
+                  padding: EdgeInsets.all(24),
+                  decoration:
+                      BoxDecoration(color: Colors.white, boxShadow: const [
+                    BoxShadow(
+                      color: Color(0x19000000),
+                      offset: Offset(0, 2),
+                      blurRadius: 10,
+                      spreadRadius: 0,
+                    ),
+                  ]),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            capitalize(e.type?.replaceAll('-', ' ')),
+                            style: TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          Visibility(
+                            visible: e.accuracy != null,
+                            child: Icon(
+                              Icons.check,
+                              color: ThemeColors.green,
+                              size: 40,
+                            ),
+                          )
+                        ],
                       ),
-                    ]),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
+                      Expanded(
+                        child: Container(
+                          alignment: Alignment.center,
+                          child: Visibility(
+                            visible: e.image != null,
+                            child: Image.network(e.image ?? ''),
+                            replacement: Text('no preview'),
+                          ),
+                        ),
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(bottom: 16),
+                        child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              title,
+                              'Accuracy:',
                               style: TextStyle(
-                                fontSize: 24,
+                                fontSize: 20,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
-                            PrimaryButton.grey(
-                              text: 'score',
-                              onPressed: () {
-                                Navigator.pushNamed(context, Routes.review,
-                                    arguments: e);
-                              },
-                            )
+                            Text(
+                              e.accuracy == null ? '-' : '${e.accuracy}/36',
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
                           ],
                         ),
-                        Expanded(
-                          child: Container(
-                            alignment: Alignment.center,
-                            child: Visibility(
-                              visible: e.image != null,
-                              child: Image.network(e.image ?? ''),
-                              replacement: Text('no preview'),
-                            ),
-                          ),
-                        ),
-                        Container(
-                          margin: EdgeInsets.only(bottom: 16),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                'Accuracy:',
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              Text(
-                                e.accuracy == null ? '-' : '${e.accuracy}/36',
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Row(
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(bottom: 16),
+                        child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
@@ -166,8 +162,31 @@ class SessionPage extends StatelessWidget {
                             ),
                           ],
                         ),
-                      ],
-                    ),
+                      ),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: PrimaryButton(
+                              text: 'Playback',
+                              onPressed: () {
+                                Navigator.pushNamed(context, Routes.playback,
+                                    arguments: e);
+                              },
+                            ),
+                          ),
+                          Container(width: 16),
+                          Expanded(
+                            child: PrimaryButton(
+                              text: 'Review',
+                              onPressed: () {
+                                Navigator.pushNamed(context, Routes.review,
+                                    arguments: e);
+                              },
+                            ),
+                          ),
+                        ],
+                      )
+                    ],
                   ),
                 );
               }),

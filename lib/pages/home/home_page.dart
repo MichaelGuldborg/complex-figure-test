@@ -15,9 +15,6 @@ class HomePage extends StatelessWidget {
     final provider = TestSessionProvider.of(context);
     final values = provider.all;
 
-    final currentUser = FirebaseAuth.instance.currentUser;
-    final title = currentUser?.email ?? 'Complex Figure Test';
-
     onLogoutPress() async {
       await FirebaseAuth.instance.signOut();
       Navigator.pushReplacementNamed(context, Routes.login);
@@ -27,7 +24,7 @@ class HomePage extends StatelessWidget {
       appBar: AppBar(
         title: Container(
           padding: EdgeInsets.all(8),
-          child: Text(title),
+          child: Text('Test sessions'),
         ),
         actions: [
           Container(
