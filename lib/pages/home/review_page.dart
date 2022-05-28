@@ -44,15 +44,15 @@ class _ReviewPageState extends State<ReviewPage> {
 
   @override
   Widget build(BuildContext context) {
-    final argument = ModalRoute.of(context)?.settings.arguments;
+    final argument = ModalRoute
+        .of(context)
+        ?.settings
+        .arguments;
     final value = argument as ComplexFigureTest;
     final provider = ComplexFigureTestProvider.of(context);
     final scale = 0.5;
     final paths = value.toPaths(scale: scale);
-    final targetPaths = cftPaths(
-      offset:
-          value.orientation == 'portrait' ? Offset(20, 80) : Offset(120, 80),
-    );
+    final targetPaths = cftPaths();
     final size = Size(
       value.width.toDouble() * scale,
       value.height.toDouble() * scale,
@@ -195,89 +195,91 @@ class _ReviewPageState extends State<ReviewPage> {
                         child: IconButton(
                           onPressed: () {
                             final style =
-                                TextStyle(fontSize: 18, color: Colors.black);
+                            TextStyle(fontSize: 18, color: Colors.black);
                             final styleBold = TextStyle(
                                 fontSize: 18,
                                 color: Colors.black,
                                 fontWeight: FontWeight.bold);
                             showDialog(
                               context: context,
-                              builder: (context) => SimpleDialog(
-                                title: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text('Info'),
-                                    IconButton(
-                                        onPressed: () {
-                                          Navigator.pop(context);
-                                        },
-                                        icon: Icon(Icons.close))
-                                  ],
-                                ),
-                                contentPadding: EdgeInsets.all(24),
-                                children: [
-                                  RichText(
-                                    text: TextSpan(
-                                      text: '',
-                                      style: style,
-                                      children: <TextSpan>[
-                                        TextSpan(
-                                          text: 'Unrecognizable:\n',
-                                          style: styleBold,
-                                        ),
-                                        TextSpan(
-                                            text:
+                              builder: (context) =>
+                                  SimpleDialog(
+                                    title: Row(
+                                      mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text('Info'),
+                                        IconButton(
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                            },
+                                            icon: Icon(Icons.close))
+                                      ],
+                                    ),
+                                    contentPadding: EdgeInsets.all(24),
+                                    children: [
+                                      RichText(
+                                        text: TextSpan(
+                                          text: '',
+                                          style: style,
+                                          children: <TextSpan>[
+                                            TextSpan(
+                                              text: 'Unrecognizable:\n',
+                                              style: styleBold,
+                                            ),
+                                            TextSpan(
+                                                text:
                                                 'If you can\'t recognize where the stroke fit in the figure.\n'),
-                                      ],
-                                    ),
-                                  ),
-                                  RichText(
-                                    text: TextSpan(
-                                      text: '',
-                                      style: style,
-                                      children: <TextSpan>[
-                                        TextSpan(
-                                          text: 'Recognizable:\n',
-                                          style: styleBold,
+                                          ],
                                         ),
-                                        TextSpan(
-                                            text:
+                                      ),
+                                      RichText(
+                                        text: TextSpan(
+                                          text: '',
+                                          style: style,
+                                          children: <TextSpan>[
+                                            TextSpan(
+                                              text: 'Recognizable:\n',
+                                              style: styleBold,
+                                            ),
+                                            TextSpan(
+                                                text:
                                                 'If you recognize where the stroke fit in the figure, but its misplaced and incomplete or distorted.\n'),
-                                      ],
-                                    ),
-                                  ),
-                                  RichText(
-                                    text: TextSpan(
-                                      text: '',
-                                      style: style,
-                                      children: <TextSpan>[
-                                        TextSpan(
-                                          text: 'Incorrect:\n',
-                                          style: styleBold,
+                                          ],
                                         ),
-                                        TextSpan(
-                                            text:
+                                      ),
+                                      RichText(
+                                        text: TextSpan(
+                                          text: '',
+                                          style: style,
+                                          children: <TextSpan>[
+                                            TextSpan(
+                                              text: 'Incorrect:\n',
+                                              style: styleBold,
+                                            ),
+                                            TextSpan(
+                                                text:
                                                 'If you recognize where the stroke fit in the figure, but its either misplaced, incomplete or distorted.\n'),
-                                      ],
-                                    ),
-                                  ),
-                                  RichText(
-                                    text: TextSpan(
-                                      text: '',
-                                      style: style,
-                                      children: <TextSpan>[
-                                        TextSpan(
-                                          text: 'Correct:\n',
-                                          style: styleBold,
+                                          ],
                                         ),
-                                        TextSpan(
-                                            text:
+                                      ),
+                                      RichText(
+                                        text: TextSpan(
+                                          text: '',
+                                          style: style,
+                                          children: <TextSpan>[
+                                            TextSpan(
+                                              text: 'Correct:\n',
+                                              style: styleBold,
+                                            ),
+                                            TextSpan(
+                                                text:
                                                 'If the stroke correctly fits its place in the figure.\n'),
-                                      ],
-                                    ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                ],
-                              ),
                             );
                           },
                           icon: Icon(
@@ -327,9 +329,9 @@ Path line(Offset from, Offset to) {
 }
 
 List<Path> cftPaths({
-  double width = 400,
-  double height = 290,
-  Offset offset = const Offset(120, 80),
+  double width = 320,
+  double height = 240,
+  Offset offset = const Offset(120, 120),
 }) {
   final List<Path> paths = [];
   final topLeft = Offset(offset.dx, offset.dy);
@@ -364,5 +366,46 @@ List<Path> cftPaths({
   paths.add(line(topCenter, center));
   paths.add(line(center, bottomCenter));
 
+  // box top
+  final boxTop = Offset(topCenter.dx, topCenter.dy - height / 3);
+  paths.add(line(topCenter, boxTop));
+  paths.add(line(boxTop, topRight));
+
+  // box right
+  final boxRight = Offset(centerRight.dx + width / 2.5, centerRight.dy);
+  final boxRightCenter = Offset(
+      centerRight.dx + (boxRight.dx - centerRight.dx) / 2.5, centerRight.dy);
+  paths.add(line(topRight, boxRight));
+  paths.add(line(boxRight, bottomRight));
+  paths.add(line(centerRight, boxRight));
+  paths.add(line(
+    Offset(boxRightCenter.dx, boxRightCenter.dy - width / 4.5),
+    boxRightCenter,
+  ));
+  paths.add(line(
+    boxRightCenter,
+    Offset(boxRightCenter.dx, boxRightCenter.dy + width / 4.5),
+  ));
+
+  // box q1
+  final box1Top = Offset(topCenter.dx + width / 7, topCenter.dy);
+  paths.add(line(box1Top, Offset(box1Top.dx, box1Top.dy + height / 2.8)));
+
+  // box q1 bottom
+
+  // box q2
+  final space = width / 12;
+  paths.add(crossLine(Offset(center.dx + space, center.dy + space * 2), width));
+  paths.add(crossLine(Offset(center.dx + space * 1.5, center.dy + space * 2.4), width));
+  paths.add(crossLine(Offset(center.dx + space * 2, center.dy + space * 2.8), width));
+  paths.add(crossLine(Offset(center.dx + space * 2.5, center.dy + space * 3.2), width));
+  paths.add(crossLine(Offset(center.dx + space * 3, center.dy + space * 3.6), width));
+
+
   return paths;
+}
+
+
+Path crossLine(Offset from, double width) {
+  return line(from, Offset(from.dx + width / 9.5, from.dy - width / 8));
 }
