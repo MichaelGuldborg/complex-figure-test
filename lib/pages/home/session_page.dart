@@ -119,122 +119,34 @@ class SessionPage extends StatelessWidget {
                           ),
                         ),
                       ),
-                      Container(
-                        margin: EdgeInsets.only(bottom: 16),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              'Accuracy:',
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                            Text(
-                              e.accuracy == null ? '-' : '${e.accuracy}/36',
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Container(
-                        margin: EdgeInsets.only(bottom: 16),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              'Strategy:',
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                            Text(
-                              e.strategy == null ? '-' : '${e.strategy}/36',
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
                       Row(
                         children: [
                           Expanded(
                             child: PrimaryButton(
-                              text: 'Playback',
+                              text: 'Review',
                               onPressed: () {
                                 Navigator.pushNamed(context, Routes.playback,
                                     arguments: e);
                               },
                             ),
                           ),
-                          Container(width: 16),
-                          Expanded(
-                            child: PrimaryButton(
-                              text: 'Review',
-                              onPressed: () {
-                                Navigator.pushNamed(context, Routes.review,
-                                    arguments: e);
-                              },
-                            ),
-                          ),
+                          // Expanded(
+                          //   child: PrimaryButton(
+                          //     text: 'Score',
+                          //     onPressed: () {
+                          //       Navigator.pushNamed(context, Routes.review,
+                          //           arguments: e);
+                          //     },
+                          //   ),
+                          // ),
                         ],
-                      )
+                      ),
                     ],
                   ),
                 );
               }),
             ),
           ),
-          // Expanded(
-          //   child: ListView(
-          //     padding: EdgeInsets.all(24),
-          //     children: List.generate(values.length, (index) {
-          //       final e = values[index];
-          //
-          //       return Container(
-          //         margin: EdgeInsets.only(bottom: 24),
-          //         decoration: BoxDecoration(
-          //           borderRadius: BorderRadius.circular(4),
-          //           color: Colors.white,
-          //           boxShadow: [
-          //             BoxShadow(
-          //               color: Colors.black.withAlpha(25),
-          //               blurRadius: 15,
-          //             )
-          //           ],
-          //         ),
-          //         child: ListTile(
-          //           contentPadding: EdgeInsets.all(24),
-          //           leading: Container(
-          //             width: 100,
-          //             height: 100,
-          //             margin: EdgeInsets.only(right: 16),
-          //             alignment: Alignment.center,
-          //             child: Visibility(
-          //               visible: e.image != null,
-          //               child: Image.network(e.image ?? ''),
-          //               replacement: Text('no preview'),
-          //             ),
-          //           ),
-          //           title: Text(
-          //             formatDate(e.start),
-          //             style: TextStyle(fontSize: 24),
-          //           ),
-          //           onTap: () {
-          //             Navigator.pushNamed(context, Routes.review, arguments: e);
-          //           },
-          //         ),
-          //       );
-          //     }),
-          //   ),
-          // ),
         ],
       ),
     );

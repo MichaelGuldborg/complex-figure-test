@@ -23,6 +23,7 @@ class PlaybackPage extends StatefulWidget {
 class _PlaybackPageState extends State<PlaybackPage> {
   double _maxTime = 0;
   double _time = 0;
+  double speed = 1;
   bool enableColor = false;
 
   @override
@@ -37,7 +38,15 @@ class _PlaybackPageState extends State<PlaybackPage> {
   Timer? _timer;
 
   _play([double millis = 1000]) {
+    // stop player
     _timer?.cancel();
+
+    // reset player
+    if (_maxTime - _time < 1) {
+      setState(() => _time = 0);
+    }
+
+    // start player
     _timer = Timer.periodic(Duration(milliseconds: 1), (t) {
       final nextTime = _time + millis;
       if (nextTime < _maxTime) {
@@ -46,11 +55,6 @@ class _PlaybackPageState extends State<PlaybackPage> {
         _timer?.cancel();
       }
     });
-  }
-
-  _stop() {
-    _timer?.cancel();
-    setState(() => _time = 0);
   }
 
   _playFast() => _play(2000);
@@ -86,14 +90,27 @@ class _PlaybackPageState extends State<PlaybackPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Row(
-                    children: const [
-                      InfoBox(
-                        title: 'Accuracy',
-                        subtitle: '22/36',
+                    children: [
+                      MaterialButton(
+                        onPressed: () {},
+                        child: InfoBox(
+                          title: 'Accuracy',
+                          subtitle: '${value.accuracy}',
+                        ),
                       ),
-                      InfoBox(
-                        title: 'Strategy',
-                        subtitle: '22/36',
+                      MaterialButton(
+                        onPressed: () {},
+                        child: InfoBox(
+                          title: 'Strategy',
+                          subtitle: '${value.strategy}',
+                        ),
+                      ),
+                      MaterialButton(
+                        onPressed: () {},
+                        child: InfoBox(
+                          title: 'Notes',
+                          subtitle: '${value.notes}',
+                        ),
                       ),
                     ],
                   ),
@@ -118,11 +135,21 @@ class _PlaybackPageState extends State<PlaybackPage> {
                   value.width.toDouble() * 0.5,
                   value.height.toDouble() * 0.5,
                 ),
-                painter: PathPainter(
+                painter: StrokePainter(
                   selectMode: false,
-                  paths: value.toPaths(scale: 0.5, time: _time),
-                  colors: enableColor ? colors : [],
+                  strokes: value.toStrokes(
+                    scale: 0.5,
+                    time: _time,
+                    colors: enableColor ? colors : [],
+                  ),
                 ),
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.only(left: 24, right: 16),
+              height: 8,
+              decoration: BoxDecoration(
+                gradient: enableColor ? LinearGradient(colors: colors) : null,
               ),
             ),
             Slider(
@@ -142,14 +169,6 @@ class _PlaybackPageState extends State<PlaybackPage> {
                   Container(
                     margin: EdgeInsets.only(right: 16),
                     child: IconButton(
-                      icon: Icon(Icons.stop),
-                      iconSize: 40,
-                      onPressed: _stop,
-                    ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(right: 16),
-                    child: IconButton(
                       icon: Icon(_isPlaying
                           ? Icons.pause_rounded
                           : Icons.play_arrow_rounded),
@@ -166,16 +185,6 @@ class _PlaybackPageState extends State<PlaybackPage> {
                     ),
                   ),
                   Expanded(child: SizedBox.shrink()),
-                  Visibility(
-                    visible: enableColor,
-                    child: Container(
-                      margin: EdgeInsets.only(right: 16),
-                      width: 80,
-                      height: 16,
-                      decoration: BoxDecoration(
-                          gradient: LinearGradient(colors: colors)),
-                    ),
-                  ),
                   Container(
                     margin: EdgeInsets.only(right: 16),
                     child: IconButton(

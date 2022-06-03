@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:rainbow_color/rainbow_color.dart';
+import 'package:reyo/models/complex_figure_test.dart';
 
-class PathPainter extends CustomPainter {
+class StrokePainter extends CustomPainter {
   static Paint get backgroundPaint {
     final paint = Paint();
     paint.blendMode = BlendMode.dstOver;
@@ -9,44 +9,31 @@ class PathPainter extends CustomPainter {
     return paint;
   }
 
-  final List<Path> paths;
-  final List<Color> colors;
+  final List<Stroke> strokes;
   final List<int> selected;
   final Map<int, Color> colorMap;
   final bool selectMode;
 
-  PathPainter({
-    required this.paths,
-    this.colors = const [],
+  StrokePainter({
+    required this.strokes,
     this.selected = const [],
     this.selectMode = true,
     this.colorMap = const {},
   }) : super();
 
-  Paint getPaint(int index) {
+  Paint getPaint(Stroke stroke) {
     final paint = Paint();
     paint.blendMode = BlendMode.srcOver;
-    paint.color = Colors.black;
+    paint.color = stroke.color;
     paint.style = PaintingStyle.stroke;
     paint.strokeWidth = 4.0;
 
     // if valid selected index fade other lines
     if (selectMode) {
-      final isActive = selected.contains(index);
+      final isActive = selected.contains(stroke.index);
       paint.color = isActive ? Colors.black : Colors.black26;
-      paint.color = colorMap[index] ?? paint.color;
-      return paint;
+      paint.color = colorMap[stroke.index] ?? paint.color;
     }
-
-    // if no colors just return black paint
-    if (colors.isEmpty) {
-      return paint;
-    }
-
-    // select relative percent color in rainbow
-    final percent = index / paths.length;
-    final tween = RainbowColorTween(colors);
-    paint.color = tween.transform(percent);
     return paint;
   }
 
@@ -54,10 +41,10 @@ class PathPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     canvas.saveLayer(Offset.zero & size, Paint());
 
-    for (var i = 0; i < paths.length; i++) {
-      final path = paths[i];
-      final paint = getPaint(i);
-      canvas.drawPath(path, paint);
+    for (var i = 0; i < strokes.length; i++) {
+      final stroke = strokes[i];
+      final paint = getPaint(stroke);
+      canvas.drawPath(stroke.path, paint);
     }
 
     final background = Rect.fromLTWH(0.0, 0.0, size.width, size.height);
@@ -66,7 +53,7 @@ class PathPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(PathPainter oldDelegate) {
+  bool shouldRepaint(StrokePainter oldDelegate) {
     return true;
   }
 }

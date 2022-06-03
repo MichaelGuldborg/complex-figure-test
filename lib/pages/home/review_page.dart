@@ -51,8 +51,10 @@ class _ReviewPageState extends State<ReviewPage> {
     final value = argument as ComplexFigureTest;
     final provider = ComplexFigureTestProvider.of(context);
     final scale = 0.5;
-    final paths = value.toPaths(scale: scale);
+    final strokes = value.toStrokes(scale: scale);
     final targetPaths = cftPaths();
+    final targetStrokes = targetPaths.map((e) =>
+        Stroke(index: 0, path: e, color: Colors.black)).toList();
     final size = Size(
       value.width.toDouble() * scale,
       value.height.toDouble() * scale,
@@ -73,7 +75,7 @@ class _ReviewPageState extends State<ReviewPage> {
     }
 
     void _next(ScoreType type) {
-      if (currentIndex == paths.length - 1) {
+      if (currentIndex == strokes.length - 1) {
         _done();
       }
       setState(() {
@@ -83,7 +85,7 @@ class _ReviewPageState extends State<ReviewPage> {
         final value = scoreTypeMap[type] ?? 0;
         accuracy += value * selected.length;
         selected.clear();
-        currentIndex = min(paths.length - 1, currentIndex + 1);
+        currentIndex = min(strokes.length - 1, currentIndex + 1);
       });
     }
 
@@ -112,15 +114,15 @@ class _ReviewPageState extends State<ReviewPage> {
                   ),
                   CustomPaint(
                     size: size,
-                    painter: PathPainter(
-                      paths: paths,
+                    painter: StrokePainter(
+                      strokes: strokes,
                       selected: [currentIndex],
                     ),
                   ),
                   Container(
                     alignment: Alignment.centerRight,
                     child: Text(
-                      '${currentIndex + 1}/${paths.length}',
+                      '${currentIndex + 1}/${strokes.length}',
                       style: TextStyle(
                         fontSize: 24,
                       ),
@@ -180,8 +182,8 @@ class _ReviewPageState extends State<ReviewPage> {
                     },
                     child: CustomPaint(
                       size: size,
-                      painter: PathPainter(
-                        paths: targetPaths,
+                      painter: StrokePainter(
+                        strokes: targetStrokes,
                         selected: selected,
                         colorMap: colorMap,
                       ),
@@ -396,15 +398,17 @@ List<Path> cftPaths({
   // box q2
   final space = width / 12;
   paths.add(crossLine(Offset(center.dx + space, center.dy + space * 2), width));
-  paths.add(crossLine(Offset(center.dx + space * 1.5, center.dy + space * 2.4), width));
-  paths.add(crossLine(Offset(center.dx + space * 2, center.dy + space * 2.8), width));
-  paths.add(crossLine(Offset(center.dx + space * 2.5, center.dy + space * 3.2), width));
-  paths.add(crossLine(Offset(center.dx + space * 3, center.dy + space * 3.6), width));
-
+  paths.add(crossLine(
+      Offset(center.dx + space * 1.5, center.dy + space * 2.4), width));
+  paths.add(
+      crossLine(Offset(center.dx + space * 2, center.dy + space * 2.8), width));
+  paths.add(crossLine(
+      Offset(center.dx + space * 2.5, center.dy + space * 3.2), width));
+  paths.add(
+      crossLine(Offset(center.dx + space * 3, center.dy + space * 3.6), width));
 
   return paths;
 }
-
 
 Path crossLine(Offset from, double width) {
   return line(from, Offset(from.dx + width / 9.5, from.dy - width / 8));
