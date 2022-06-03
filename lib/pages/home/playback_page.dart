@@ -92,18 +92,24 @@ class _PlaybackPageState extends State<PlaybackPage> {
                 children: [
                   Row(
                     children: [
-                      MaterialButton(
-                        onPressed: () {},
-                        child: InfoBox(
-                          title: 'Accuracy',
-                          subtitle: '${value.accuracy}',
+                      Container(
+                        margin: EdgeInsets.only(right: 8),
+                        child: MaterialButton(
+                          onPressed: () {},
+                          child: InfoBox(
+                            title: 'Accuracy',
+                            subtitle: '${value.accuracy}',
+                          ),
                         ),
                       ),
-                      MaterialButton(
-                        onPressed: () {},
-                        child: InfoBox(
-                          title: 'Strategy',
-                          subtitle: '${value.strategy}',
+                      Container(
+                        margin: EdgeInsets.only(right: 8),
+                        child: MaterialButton(
+                          onPressed: () {},
+                          child: InfoBox(
+                            title: 'Strategy',
+                            subtitle: '${value.strategy}',
+                          ),
                         ),
                       ),
                       MaterialButton(
