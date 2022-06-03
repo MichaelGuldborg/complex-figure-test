@@ -55,12 +55,12 @@ class _PlaybackPageState extends State<PlaybackPage> {
       } else if (_time < _maxTime) {
         setState(() => _time = _maxTime);
       } else {
-        _timer?.cancel();
+        setState(() => _timer?.cancel());
       }
     });
   }
 
-  _pause() => _timer?.cancel();
+  _pause() => setState(() => _timer?.cancel());
 
   get _isPlaying => _timer?.isActive ?? false;
 
@@ -180,11 +180,11 @@ class _PlaybackPageState extends State<PlaybackPage> {
                   Container(
                     margin: EdgeInsets.only(right: 16),
                     child: MaterialButton(
+                      onPressed: () => setState(() => speed = 1),
                       padding: EdgeInsets.symmetric(
                         vertical: 12,
                         horizontal: 8,
                       ),
-                      onPressed: () {},
                       child: Text(
                         'x${speed.floor()}',
                         style: TextStyle(
