@@ -24,7 +24,7 @@ class PlaybackPage extends StatefulWidget {
 class _PlaybackPageState extends State<PlaybackPage> {
   double _maxTime = 0;
   double _time = 0;
-  double speed = 1000;
+  double speed = 1;
   bool enableColor = false;
 
   @override
@@ -184,9 +184,6 @@ class _PlaybackPageState extends State<PlaybackPage> {
                         vertical: 12,
                         horizontal: 8,
                       ),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(4),
-                          side: BorderSide(color: Colors.grey.shade500)),
                       onPressed: () {},
                       child: Text(
                         'x${speed.floor()}',

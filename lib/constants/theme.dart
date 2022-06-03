@@ -15,4 +15,10 @@ final ThemeData theme = ThemeData(
     elevation: 0,
     iconTheme: IconThemeData(color: Colors.black),
   ),
+  buttonTheme: ButtonThemeData(
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(4),
+      side: BorderSide(color: Colors.grey.shade500),
+    ),
+  ),
 );

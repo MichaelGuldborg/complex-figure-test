@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:rainbow_color/rainbow_color.dart';
 import 'package:reyo/models/identifyable.dart';
 import 'package:reyo/models/mouse_event.dart';
@@ -57,7 +58,8 @@ class ComplexFigureTest extends Identifiable {
     final startMillis = start.microsecondsSinceEpoch;
     final endMillis = end.microsecondsSinceEpoch;
     final durationMillis = endMillis - startMillis;
-    final rainbow = RainbowColorTween(colors);
+    final rainbow = RainbowColorTween(
+        colors.isEmpty ? [Colors.black, Colors.black] : colors);
     return events.fold([], (List<Stroke> result, e) {
       final _millis = e.timestamp.microsecondsSinceEpoch - startMillis;
       final _percent = _millis / durationMillis;
