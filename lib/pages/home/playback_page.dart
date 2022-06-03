@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:reyo/components/info_box.dart';
@@ -23,7 +24,7 @@ class PlaybackPage extends StatefulWidget {
 class _PlaybackPageState extends State<PlaybackPage> {
   double _maxTime = 0;
   double _time = 0;
-  double speed = 1;
+  double speed = 1000;
   bool enableColor = false;
 
   @override
@@ -37,27 +38,27 @@ class _PlaybackPageState extends State<PlaybackPage> {
 
   Timer? _timer;
 
-  _play([double millis = 1000]) {
+  _play() {
     // stop player
     _timer?.cancel();
 
     // reset player
-    if (_maxTime - _time < 1) {
+    if (_maxTime - _time <= 1) {
       setState(() => _time = 0);
     }
 
     // start player
     _timer = Timer.periodic(Duration(milliseconds: 1), (t) {
-      final nextTime = _time + millis;
+      final nextTime = _time + (speed * 1000);
       if (nextTime < _maxTime) {
         setState(() => _time = nextTime);
+      } else if (_time < _maxTime) {
+        setState(() => _time = _maxTime);
       } else {
         _timer?.cancel();
       }
     });
   }
-
-  _playFast() => _play(2000);
 
   _pause() => _timer?.cancel();
 
@@ -178,10 +179,40 @@ class _PlaybackPageState extends State<PlaybackPage> {
                   ),
                   Container(
                     margin: EdgeInsets.only(right: 16),
+                    child: MaterialButton(
+                      padding: EdgeInsets.symmetric(
+                        vertical: 12,
+                        horizontal: 8,
+                      ),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(4),
+                          side: BorderSide(color: Colors.grey.shade500)),
+                      onPressed: () {},
+                      child: Text(
+                        'x${speed.floor()}',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(right: 16),
                     child: IconButton(
-                      icon: Icon(Icons.fast_forward_rounded),
+                      icon: Icon(Icons.remove),
                       iconSize: 40,
-                      onPressed: _playFast,
+                      onPressed: () =>
+                          setState(() => speed = max(1, speed - 1)),
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(right: 16),
+                    child: IconButton(
+                      icon: Icon(Icons.add),
+                      iconSize: 40,
+                      onPressed: () =>
+                          setState(() => speed = min(99, speed + 1)),
                     ),
                   ),
                   Expanded(child: SizedBox.shrink()),
