@@ -57,7 +57,7 @@ class SessionPage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                InfoBox(title: 'Name', subtitle: '${value.name}'),
+                InfoBox(title: 'ID', subtitle: '${value.name}'),
                 InfoBox(title: 'Age', subtitle: toAge(value.birthDate)),
                 InfoBox(title: 'Sex', subtitle: '${value.sex}'),
                 InfoBox(title: 'Education', subtitle: '${value.education}'),

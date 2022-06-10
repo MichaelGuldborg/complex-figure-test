@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:reyo/components/LoadingOverlay.dart';
 import 'package:reyo/components/primary_button.dart';
 import 'package:reyo/constants/theme_colors.dart';
 import 'package:reyo/models/test_session.dart';
@@ -19,8 +20,13 @@ class TestFlowPage extends StatefulWidget {
 class _TestFlowPageState extends State<TestFlowPage> {
   TestSession? session;
   int index = 0;
+  bool isLoading = false;
+  setLoading(bool loading){
+    setState(() => isLoading = loading);
+  }
 
   _next() {
+    setLoading(false);
     if (index < 6) {
       setState(() => index += 1);
       return;
@@ -37,64 +43,71 @@ class _TestFlowPageState extends State<TestFlowPage> {
     return Scaffold(
       appBar: AppBar(),
       extendBodyBehindAppBar: true,
-      body: IndexedStack(
-        index: index,
-        children: [
-          TestRegisterPage(
-            onNextPress: (request) async {
-              session = await providerA.create(TestSession(
-                id: '${providerA.all.length}',
-                uid: currentUser.uid,
-                name: request.name,
-                birthDate: request.birthDate,
-                sex: request.sex,
-                education: request.education,
-                start: DateTime.now(),
-                testIds: [],
-              ));
-              _next();
-            },
-          ),
-          TestDrawPage(
-            onNextPress: (request) async {
-              request.type = 'copy';
-              final value = await providerB.createWithImage(request);
-              if (value == null) return showError('Something went wrong');
-              session?.testIds.add(value.id);
-              providerA.update(session?.id, session?.toMap());
-              _next();
-            },
-          ),
-          TestInfoPage(
-            onNextPress: () => _next(),
-          ),
-          TestDrawPage(
-            onNextPress: (request) async {
-              request.type = 'immediate-recall';
-              final value = await providerB.createWithImage(request);
-              if (value == null) return showError('Something went wrong');
-              session?.testIds.add(value.id);
-              providerA.update(session?.id, session?.toMap());
-              _next();
-            },
-          ),
-          TestInfoPage(
-            onNextPress: () => _next(),
-          ),
-          TestDrawPage(
-            onNextPress: (request) async {
-              request.type = 'delayed-recall';
-              final value = await providerB.createWithImage(request);
-              if (value == null) return showError('Something went wrong');
-              session?.testIds.add(value.id);
-              providerA.update(session?.id, session?.toMap());
-              _next();
-            },
-          ),
-          TestInfoPage(
-            onNextPress: () => _next(),
-          ),
-        ],
+      body: LoadingOverlay(
+        loading: isLoading,
+        child: IndexedStack(
+          index: index,
+          children: [
+            TestRegisterPage(
+              onNextPress: (request) async {
+                setLoading(true);
+                session = await providerA.create(TestSession(
+                  id: '${providerA.all.length}',
+                  uid: currentUser.uid,
+                  name: request.name,
+                  birthDate: request.birthDate,
+                  sex: request.sex,
+                  education: request.education,
+                  start: DateTime.now(),
+                  testIds: [],
+                ));
+                _next();
+              },
+            ),
+            TestDrawPage(
+              onNextPress: (request) async {
+                setLoading(true);
+                request.type = 'copy';
+                final value = await providerB.createWithImage(request);
+                if (value == null) return showError('Something went wrong');
+                session?.testIds.add(value.id);
+                providerA.update(session?.id, session?.toMap());
+                _next();
+              },
+            ),
+            TestInfoPage(
+              onNextPress: () => _next(),
+            ),
+            TestDrawPage(
+              onNextPress: (request) async {
+                setLoading(true);
+                request.type = 'immediate-recall';
+                final value = await providerB.createWithImage(request);
+                if (value == null) return showError('Something went wrong');
+                session?.testIds.add(value.id);
+                providerA.update(session?.id, session?.toMap());
+                _next();
+              },
+            ),
+            TestInfoPage(
+              onNextPress: () => _next(),
+            ),
+            TestDrawPage(
+              onNextPress: (request) async {
+                setLoading(true);
+                request.type = 'delayed-recall';
+                final value = await providerB.createWithImage(request);
+                if (value == null) return showError('Something went wrong');
+                session?.testIds.add(value.id);
+                providerA.update(session?.id, session?.toMap());
+                _next();
+              },
+            ),
+            TestInfoPage(
+              onNextPress: () => _next(),
+            ),
+          ],
+        ),
       ),
     );
   }

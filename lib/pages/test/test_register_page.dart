@@ -20,7 +20,7 @@ class TestSessionForm {
 class TestRegisterPage extends StatefulWidget {
   final void Function(TestSessionForm request) onNextPress;
 
-  TestRegisterPage({
+  const TestRegisterPage({
     Key? key,
     required this.onNextPress,
   }) : super(key: key);
@@ -54,7 +54,7 @@ class _TestRegisterPageState extends State<TestRegisterPage> {
                   controller: _name,
                   keyboardType: TextInputType.name,
                   decoration: InputDecoration(
-                    hintText: 'Name',
+                    hintText: 'ID',
                   ),
                 ),
               ),
