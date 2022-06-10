@@ -92,24 +92,21 @@ class _PlaybackPageState extends State<PlaybackPage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Row(
-                    children: [
-                      MaterialButton(
-                        child: InfoBox(
-                          title: 'Notes',
-                          subtitle: truncate(value.notes, 12),
-                        ),
-                        onPressed: () {
-                          showBottomSheetTextArea(
-                            context,
-                            text: value.notes,
-                            onTap: (text) {
-                              provider.update(value.id, {'notes': text});
-                            },
-                          );
+                  MaterialButton(
+                    padding: EdgeInsets.zero,
+                    child: InfoBox(
+                      title: 'Notes',
+                      subtitle: truncate(value.notes, 12),
+                    ),
+                    onPressed: () {
+                      showBottomSheetTextArea(
+                        context,
+                        text: value.notes,
+                        onTap: (text) {
+                          provider.update(value.id, {'notes': text});
                         },
-                      ),
-                    ],
+                      );
+                    },
                   ),
                   Row(
                     children: [
