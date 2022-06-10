@@ -92,26 +92,6 @@ class _PlaybackPageState extends State<PlaybackPage> {
                 children: [
                   Row(
                     children: [
-                      Container(
-                        margin: EdgeInsets.only(right: 8),
-                        child: MaterialButton(
-                          onPressed: () {},
-                          child: InfoBox(
-                            title: 'Accuracy',
-                            subtitle: '${value.accuracy}',
-                          ),
-                        ),
-                      ),
-                      Container(
-                        margin: EdgeInsets.only(right: 8),
-                        child: MaterialButton(
-                          onPressed: () {},
-                          child: InfoBox(
-                            title: 'Strategy',
-                            subtitle: '${value.strategy}',
-                          ),
-                        ),
-                      ),
                       MaterialButton(
                         onPressed: () {},
                         child: InfoBox(
@@ -200,23 +180,31 @@ class _PlaybackPageState extends State<PlaybackPage> {
                       ),
                     ),
                   ),
-                  Container(
-                    margin: EdgeInsets.only(right: 16),
-                    child: IconButton(
-                      icon: Icon(Icons.remove),
-                      iconSize: 40,
-                      onPressed: () =>
-                          setState(() => speed = max(1, speed - 1)),
-                    ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(right: 16),
-                    child: IconButton(
-                      icon: Icon(Icons.add),
-                      iconSize: 40,
-                      onPressed: () =>
-                          setState(() => speed = min(99, speed + 1)),
-                    ),
+                  Column(
+                    children: [
+                      SizedBox(
+                        width: 56,
+                        height: 28,
+                        child: MaterialButton(
+                          shape: RoundedRectangleBorder(),
+                          visualDensity: VisualDensity.compact,
+                          child: Icon(Icons.arrow_drop_up_outlined, size: 32),
+                          onPressed: () =>
+                              setState(() => speed = min(99, speed + 1)),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 56,
+                        height: 28,
+                        child: MaterialButton(
+                          shape: RoundedRectangleBorder(),
+                          visualDensity: VisualDensity.compact,
+                          child: Icon(Icons.arrow_drop_down_outlined, size: 32),
+                          onPressed: () =>
+                              setState(() => speed = max(1, speed - 1)),
+                        ),
+                      ),
+                    ],
                   ),
                   Expanded(child: SizedBox.shrink()),
                   Container(
