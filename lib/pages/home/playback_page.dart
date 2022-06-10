@@ -2,7 +2,9 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:reyo/components/bottom_sheet/bottom_sheet_text_area.dart';
 import 'package:reyo/components/info_box.dart';
+import 'package:reyo/functions/truncate.dart';
 import 'package:reyo/models/complex_figure_test.dart';
 import 'package:reyo/pages/home/path_painter.dart';
 import 'package:reyo/providers/complex_figure_test_provider.dart';
@@ -93,11 +95,19 @@ class _PlaybackPageState extends State<PlaybackPage> {
                   Row(
                     children: [
                       MaterialButton(
-                        onPressed: () {},
                         child: InfoBox(
                           title: 'Notes',
-                          subtitle: '${value.notes}',
+                          subtitle: truncate(value.notes, 12),
                         ),
+                        onPressed: () {
+                          showBottomSheetTextArea(
+                            context,
+                            text: value.notes,
+                            onTap: (text) {
+                              provider.update(value.id, {'notes': text});
+                            },
+                          );
+                        },
                       ),
                     ],
                   ),
