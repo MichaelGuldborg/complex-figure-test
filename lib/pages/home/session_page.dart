@@ -92,11 +92,17 @@ class SessionPage extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                            capitalize(e.type?.replaceAll('-', ' ')),
-                            style: TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.w600,
+                          GestureDetector(
+                            onLongPress: () {
+                              Navigator.pushNamed(context, Routes.review,
+                                  arguments: e);
+                            },
+                            child: Text(
+                              capitalize(e.type?.replaceAll('-', ' ')),
+                              style: TextStyle(
+                                fontSize: 24,
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
                           ),
                           Visibility(
@@ -130,15 +136,6 @@ class SessionPage extends StatelessWidget {
                               },
                             ),
                           ),
-                          // Expanded(
-                          //   child: PrimaryButton(
-                          //     text: 'Score',
-                          //     onPressed: () {
-                          //       Navigator.pushNamed(context, Routes.review,
-                          //           arguments: e);
-                          //     },
-                          //   ),
-                          // ),
                         ],
                       ),
                     ],

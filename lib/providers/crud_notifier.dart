@@ -50,12 +50,13 @@ class CrudNotifier<T extends Identifiable> extends ChangeNotifier
   }
 
   @override
-  Future refreshAll() async {
+  Future<List<T>> refreshAll() async {
     final response = await service.readAll();
-    if (response.isEmpty) return;
+    if (response.isEmpty) return response;
     _values.clear();
     _values.addAll(response);
     notifyListeners();
+    return response;
   }
 
   @override

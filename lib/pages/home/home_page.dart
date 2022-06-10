@@ -6,6 +6,7 @@ import 'package:reyo/constants/routes.dart';
 import 'package:reyo/constants/theme_colors.dart';
 import 'package:reyo/functions/formatDate.dart';
 import 'package:reyo/providers/test_session_provider.dart';
+import 'package:reyo/services/flutter_message.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -54,43 +55,51 @@ class HomePage extends StatelessWidget {
           Navigator.pushNamed(context, Routes.test);
         },
       ),
-      body: ListView(
-        padding: EdgeInsets.all(24),
-        children: List.generate(
-          values.length,
-          (index) {
-            final e = values[index];
-            return Container(
-              margin: EdgeInsets.only(bottom: 24),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(4),
-                color: Colors.white,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withAlpha(25),
-                    blurRadius: 15,
-                  )
-                ],
-              ),
-              child: ListTile(
-                contentPadding: EdgeInsets.all(24),
-                leading: UserNameAvatar(
-                  name: '${e.name}',
+      body: RefreshIndicator(
+        onRefresh: () async {
+          final response = await provider.refreshAll();
+          if (response.isEmpty) {
+            showError('Check your internet connection and try again');
+          }
+        },
+        child: ListView(
+          padding: EdgeInsets.all(24),
+          children: List.generate(
+            values.length,
+            (index) {
+              final e = values[index];
+              return Container(
+                margin: EdgeInsets.only(bottom: 24),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(4),
+                  color: Colors.white,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withAlpha(25),
+                      blurRadius: 15,
+                    )
+                  ],
                 ),
-                title: Text(
-                  '${e.name}',
-                  style: TextStyle(fontSize: 24),
+                child: ListTile(
+                  contentPadding: EdgeInsets.all(24),
+                  leading: UserNameAvatar(
+                    name: '${e.name}',
+                  ),
+                  title: Text(
+                    '${e.name}',
+                    style: TextStyle(fontSize: 24),
+                  ),
+                  subtitle: Text(
+                    formatDateTime(e.start),
+                    style: TextStyle(fontSize: 20),
+                  ),
+                  onTap: () {
+                    Navigator.pushNamed(context, Routes.session, arguments: e);
+                  },
                 ),
-                subtitle: Text(
-                  formatDateTime(e.start),
-                  style: TextStyle(fontSize: 20),
-                ),
-                onTap: () {
-                  Navigator.pushNamed(context, Routes.session, arguments: e);
-                },
-              ),
-            );
-          },
+              );
+            },
+          ),
         ),
       ),
     );
