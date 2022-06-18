@@ -18,7 +18,7 @@ Built with [Flutter](https://flutter.dev) and [Firebase](https://firebase.com).
 	<a href="#Preview">Preview</a> •
 	<a href="#Features">Features</a> •
 	<a href="#Development">Development</a> •
-	<a href="#refferences">References</a>
+	<a href="#References">References</a>
 </p>
 
 ## Preview
