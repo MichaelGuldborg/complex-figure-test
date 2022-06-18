@@ -6,7 +6,7 @@
 Built with [Flutter](https://flutter.dev) and [Firebase](https://firebase.com).
 
 
-*Michael Guldborg 2021*
+*Michael Guldborg 2022*
 
 <p align="center">
 	<a href="https://cft.michaelguldborg.dk">
