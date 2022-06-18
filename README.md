@@ -39,7 +39,7 @@ Built with [Flutter](https://flutter.dev) and [Firebase](https://firebase.com).
 | Draw functionality  |  | &#9745; |
 | Video playback      |  | &#9745; |
 | Clickable assesment |  | &#9745; |
-| <b>Total</b>        | --- | 5/5
+| <b>Total</b>        | --- | 4/4
 
 ## Development
 
