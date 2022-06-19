@@ -45,7 +45,7 @@ Built with [Flutter](https://flutter.dev) and [Firebase](https://firebase.com).
 
 ```bash
 # Install dependencies
-$ yarn
+$ flutter pub get
 
 # Run on application
 $ flutter run
