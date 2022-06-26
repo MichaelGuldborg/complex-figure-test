@@ -106,8 +106,9 @@ List<Stroke> createStrokes(
   final startMillis = events.first.timestamp.microsecondsSinceEpoch;
   final endMillis = events.last.timestamp.microsecondsSinceEpoch;
   final durationMillis = endMillis - startMillis;
-  final _colors = colors.isEmpty ? [Colors.black, Colors.black] : colors;
-  final rainbow = RainbowColorTween(_colors);
+  // TODO: add colors
+  // final _colors = colors.isEmpty ? [Colors.black, Colors.black] : colors;
+  // final rainbow = RainbowColorTween(_colors);
   final List<Stroke> strokes = [];
 
   var skip = false;
@@ -132,7 +133,7 @@ List<Stroke> createStrokes(
         Stroke(
           index: strokes.length,
           path: path,
-          color: rainbow.transform(_percent),
+          color: Colors.black,
           start: e.timestamp,
         ),
       );
