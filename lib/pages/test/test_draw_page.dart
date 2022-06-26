@@ -1,12 +1,12 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:reyo/components/LoadingOverlay.dart';
 import 'package:reyo/components/button.dart';
 import 'package:reyo/constants/assets.dart';
 import 'package:reyo/constants/theme_colors.dart';
 import 'package:reyo/models/complex_figure_test.dart';
 import 'package:reyo/models/mouse_event.dart';
+import 'package:reyo/pages/home/path_painter.dart';
 import 'package:reyo/pages/paint/paint_view.dart';
 import 'package:reyo/providers/config_provider.dart';
 
@@ -23,12 +23,13 @@ class TestDrawPage extends StatefulWidget {
 }
 
 class _TestDrawPageState extends State<TestDrawPage> {
-  final _controller = PainterController()
-    ..backgroundColor = Colors.white
-    ..drawColor = Colors.black
-    ..thickness = 4.0;
 
+  final _controller = PainterController();
   final List<MouseEvent> events = [];
+
+  void addEvent(MouseEvent event) {
+    setState(() => events.add(event));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +40,43 @@ class _TestDrawPageState extends State<TestDrawPage> {
       body: SafeArea(
         child: Stack(
           children: [
-            buildView(settings),
+            GestureDetector(
+              onPanStart: (details) {
+                addEvent(MouseEvent(
+                  type: MouseEventType.PAN_START,
+                  timestamp: DateTime.now(),
+                  duration: details.sourceTimeStamp,
+                  position: details.localPosition,
+                  device: details.kind,
+                ));
+              },
+              onPanUpdate: (details) {
+                addEvent(MouseEvent(
+                  type: MouseEventType.PAN_UPDATE,
+                  timestamp: DateTime.now(),
+                  duration: details.sourceTimeStamp,
+                  position: details.localPosition,
+                  delta: details.delta,
+                ));
+              },
+              onPanEnd: (details) {
+                addEvent(MouseEvent(
+                  type: MouseEventType.PAN_END,
+                  timestamp: DateTime.now(),
+                  position: events.last.position,
+                ));
+              },
+              child: CustomPaint(
+                size: Size(
+                  double.infinity,
+                  double.infinity,
+                ),
+                painter: StrokePainter(
+                  selectMode: false,
+                  strokes: createStrokes(events),
+                ),
+              ),
+            ),
             Positioned(
               bottom: 0,
               right: 0,
@@ -55,7 +92,6 @@ class _TestDrawPageState extends State<TestDrawPage> {
                         position: events.last.position,
                         timestamp: DateTime.now(),
                       ));
-                      _controller.undo();
                     },
                     child: Icon(Icons.undo, color: Colors.black),
                   ),
@@ -70,6 +106,7 @@ class _TestDrawPageState extends State<TestDrawPage> {
                 backgroundColor: ThemeColors.red,
                 child: Icon(Icons.stop, color: Colors.white),
                 onTap: () async {
+                  // TODO: enable thumbnail
                   final details = _controller.createPicture();
                   widget.onNextPress(ComplexFigureTest(
                     id: '${Random().nextInt(100000)}',
@@ -87,39 +124,6 @@ class _TestDrawPageState extends State<TestDrawPage> {
         ),
       ),
     );
-  }
-
-  Widget buildView(SettingsProvider config) {
-    final paintView = PaintView(
-      controller: _controller,
-      onPanStart: (details) {
-        events.add(MouseEvent(
-          type: MouseEventType.PAN_START,
-          timestamp: DateTime.now(),
-          duration: details.sourceTimeStamp,
-          position: details.localPosition,
-          device: details.kind,
-        ));
-      },
-      onPanUpdate: (details) {
-        events.add(MouseEvent(
-          type: MouseEventType.PAN_UPDATE,
-          timestamp: DateTime.now(),
-          duration: details.sourceTimeStamp,
-          position: details.localPosition,
-          delta: details.delta,
-        ));
-      },
-      onPanEnd: (details) {
-        events.add(MouseEvent(
-          type: MouseEventType.PAN_END,
-          timestamp: DateTime.now(),
-          position: events.last.position,
-        ));
-      },
-    );
-
-    return paintView;
   }
 }
 

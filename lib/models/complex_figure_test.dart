@@ -55,43 +55,12 @@ class ComplexFigureTest extends Identifiable {
     double scale = 1,
     List<Color> colors = const [],
   }) {
-    final startMillis = start.microsecondsSinceEpoch;
-    final endMillis = end.microsecondsSinceEpoch;
-    final durationMillis = endMillis - startMillis;
-    final rainbow = RainbowColorTween(
-        colors.isEmpty ? [Colors.black, Colors.black] : colors);
-    return events.fold([], (List<Stroke> result, e) {
-      final _millis = e.timestamp.microsecondsSinceEpoch - startMillis;
-      final _percent = _millis / durationMillis;
-      if (_millis > time) return result;
-
-      if (e.type == MouseEventType.PAN_START) {
-        final path = Path();
-        final dx = e.position.dx * scale;
-        final dy = e.position.dy * scale;
-        path.moveTo(dx, dy);
-        result.add(
-          Stroke(
-            index: result.length,
-            path: path,
-            color: rainbow.transform(_percent),
-            start: e.timestamp,
-          ),
-        );
-      } else if (e.type == MouseEventType.PAN_UPDATE) {
-        final dx = e.position.dx * scale;
-        final dy = e.position.dy * scale;
-        result.last.path.lineTo(dx, dy);
-        result.last.end = e.timestamp;
-      } else if (e.type == MouseEventType.PAN_END) {
-        // nothing
-      } else if (e.type == MouseEventType.TAP) {
-        // nothing
-      } else if (e.type == MouseEventType.UNDO) {
-        result.removeLast();
-      }
-      return result;
-    });
+    return createStrokes(
+      events,
+      time: time,
+      scale: scale,
+      colors: colors,
+    );
   }
 
   Map<String, dynamic> toMap() {
@@ -124,6 +93,60 @@ class ComplexFigureTest extends Identifiable {
       notes: map['notes'],
     );
   }
+}
+
+List<Stroke> createStrokes(
+  List<MouseEvent> events, {
+  double time = double.maxFinite,
+  double scale = 1,
+  List<Color> colors = const [],
+  bool hideTouch = true,
+}) {
+  if (events.isEmpty) return [];
+  final startMillis = events.first.timestamp.microsecondsSinceEpoch;
+  final endMillis = events.last.timestamp.microsecondsSinceEpoch;
+  final durationMillis = endMillis - startMillis;
+  final _colors = colors.isEmpty ? [Colors.black, Colors.black] : colors;
+  final rainbow = RainbowColorTween(_colors);
+  final List<Stroke> strokes = [];
+
+  var skip = false;
+  for (var i = 0; i < events.length; i++) {
+    final e = events[i];
+    final _millis = e.timestamp.microsecondsSinceEpoch - startMillis;
+    final _percent = _millis / durationMillis;
+    if (_millis > time) return strokes;
+
+    final isTouch = e.device == PointerDeviceKind.touch;
+    if (hideTouch && e.type == MouseEventType.PAN_START) {
+      skip = isTouch;
+    }
+    if (skip) continue;
+
+    if (e.type == MouseEventType.PAN_START) {
+      final path = Path();
+      final dx = e.position.dx * scale;
+      final dy = e.position.dy * scale;
+      path.moveTo(dx, dy);
+      strokes.add(
+        Stroke(
+          index: strokes.length,
+          path: path,
+          color: rainbow.transform(_percent),
+          start: e.timestamp,
+        ),
+      );
+    } else if (e.type == MouseEventType.PAN_UPDATE) {
+      final dx = e.position.dx * scale;
+      final dy = e.position.dy * scale;
+      strokes.last.path.lineTo(dx, dy);
+      strokes.last.end = e.timestamp;
+    } else if (e.type == MouseEventType.UNDO) {
+      strokes.removeLast();
+    }
+  }
+
+  return strokes;
 }
 
 class Stroke {
