@@ -9,8 +9,25 @@ class LoginPage extends StatelessWidget {
   final _email = TextEditingController();
   final _password = TextEditingController();
 
+
+
   @override
   Widget build(BuildContext context) {
+
+    void onLogin() async {
+      final email = _email.text.trim().toLowerCase();
+      final password = _password.text.trim();
+      final response = await FirebaseAuth.instance
+          .signInWithEmailAndPassword(
+          email: email, password: password)
+          .catchError((error) {
+        showError('$error');
+      });
+      if (response.user != null) {
+        Navigator.pushReplacementNamed(context, Routes.home);
+      }
+    }
+
     return Scaffold(
       body: Container(
         alignment: Alignment.center,
@@ -24,7 +41,7 @@ class LoginPage extends StatelessWidget {
                 margin: EdgeInsets.only(bottom: 32),
                 child: GestureDetector(
                   onTap: () {
-                    if (kReleaseMode) return;
+                    // if (kReleaseMode) return;
                     _email.text = 'mgivskud9@gmail.com';
                     _password.text = 'Password1';
                   },
@@ -47,6 +64,7 @@ class LoginPage extends StatelessWidget {
                 margin: EdgeInsets.only(bottom: 16),
                 child: TextField(
                   controller: _password,
+                  onEditingComplete: onLogin,
                   keyboardType: TextInputType.text,
                   obscureText: true,
                   decoration: InputDecoration(
@@ -54,39 +72,33 @@ class LoginPage extends StatelessWidget {
                   ),
                 ),
               ),
-              MaterialButton(
-                color: Colors.blue,
-                child: Text('Login', style: TextStyle(color: Colors.white)),
-                onPressed: () async {
-                  final email = _email.text.trim().toLowerCase();
-                  final password = _password.text.trim();
-                  final response = await FirebaseAuth.instance
-                      .signInWithEmailAndPassword(
-                      email: email, password: password)
-                      .catchError((error) {
-                    showError('$error');
-                  });
-                  if (response.user != null) {
-                    Navigator.pushReplacementNamed(context, Routes.home);
-                  }
-                },
+              Container(
+                margin: EdgeInsets.only(bottom: 16),
+                child: MaterialButton(
+                  color: Colors.blue,
+                  child: Text('Login', style: TextStyle(color: Colors.white)),
+                  onPressed: onLogin,
+                ),
               ),
-              MaterialButton(
-                color: Colors.blue,
-                child: Text('Register', style: TextStyle(color: Colors.white)),
-                onPressed: () async {
-                  final email = _email.text.trim().toLowerCase();
-                  final password = _password.text.trim();
-                  final response = await FirebaseAuth.instance
-                      .createUserWithEmailAndPassword(
-                      email: email, password: password)
-                      .catchError((error) {
-                    showError('$error');
-                  });
-                  if (response.user != null) {
-                    Navigator.pushReplacementNamed(context, Routes.home);
-                  }
-                },
+              Container(
+                margin: EdgeInsets.only(bottom: 16),
+                child: MaterialButton(
+                  color: Colors.blue,
+                  child: Text('Register', style: TextStyle(color: Colors.white)),
+                  onPressed: () async {
+                    final email = _email.text.trim().toLowerCase();
+                    final password = _password.text.trim();
+                    final response = await FirebaseAuth.instance
+                        .createUserWithEmailAndPassword(
+                        email: email, password: password)
+                        .catchError((error) {
+                      showError('$error');
+                    });
+                    if (response.user != null) {
+                      Navigator.pushReplacementNamed(context, Routes.home);
+                    }
+                  },
+                ),
               ),
               TextButton(
                 child: Text('Forgot your password?'),

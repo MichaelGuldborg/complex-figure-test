@@ -95,6 +95,12 @@ class ComplexFigureTest extends Identifiable {
   }
 }
 
+Color createColor(List<Color> colors, double percent) {
+  if(colors.isEmpty) return Colors.black;
+  if(colors.length == 1) return colors.first;
+  return RainbowColorTween(colors).transform(percent);
+}
+
 List<Stroke> createStrokes(
   List<MouseEvent> events, {
   double time = double.maxFinite,
@@ -106,9 +112,6 @@ List<Stroke> createStrokes(
   final startMillis = events.first.timestamp.microsecondsSinceEpoch;
   final endMillis = events.last.timestamp.microsecondsSinceEpoch;
   final durationMillis = endMillis - startMillis;
-  // TODO: add colors
-  // final _colors = colors.isEmpty ? [Colors.black, Colors.black] : colors;
-  // final rainbow = RainbowColorTween(_colors);
   final List<Stroke> strokes = [];
 
   var skip = false;
@@ -133,7 +136,7 @@ List<Stroke> createStrokes(
         Stroke(
           index: strokes.length,
           path: path,
-          color: Colors.black,
+          color: createColor(colors, _percent),
           start: e.timestamp,
         ),
       );
