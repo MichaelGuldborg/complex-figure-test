@@ -88,7 +88,7 @@ class ComplexFigureTest extends Identifiable {
       } else if (e.type == MouseEventType.TAP) {
         // nothing
       } else if (e.type == MouseEventType.UNDO) {
-        result.removeLast();
+        if(result.isNotEmpty) result.removeLast();
       }
       return result;
     });
